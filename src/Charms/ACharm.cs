@@ -9,7 +9,7 @@ public abstract class ACharm
     public abstract string Name { get; }
     public abstract string Description { get; }
     public abstract int DefaultCost { get; }
-    public abstract string Scene { get; }
+    public abstract string SceneName { get; }
     public abstract float X { get; } //Coordinates in Scene
     public abstract float Y { get; } //Coordinates in Scene
     

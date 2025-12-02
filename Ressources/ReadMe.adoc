@@ -1,3 +1,0 @@
-﻿# Ressources
-
-Contains ressources like language-files and images.

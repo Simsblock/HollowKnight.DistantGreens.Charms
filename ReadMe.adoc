@@ -3,3 +3,6 @@
 A Hollow Knight mod which adds the Charms for a potential future mod called DistantGreens. +
 Native Integration with Randomizer 4 is planned. (Not yet implemented)
 
+## Naming Conventions
+- I-Prefix for Interfaces; eg.: IClass
+- A-Prefix for Abstract classes; eg.: AClass

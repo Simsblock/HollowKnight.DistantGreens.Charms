@@ -1,10 +1,10 @@
 ﻿<!-- Credit to SFGrenade https://github.com/SFGrenade -->
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RootNamespace>HKMod</RootNamespace>
+        <RootNamespace>DistantGreensCharms</RootNamespace>
         <TargetFramework>net472</TargetFramework>
-        <AssemblyTitle>HKMod</AssemblyTitle>
-        <Product>HKMod</Product>
+        <AssemblyTitle>DistantGreensCharms</AssemblyTitle>
+        <Product>DistantGreensCharms</Product>
         <Description>A Hollow Knight mod.</Description>
         <Copyright>Copyright ©</Copyright>
         <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -12,6 +12,8 @@
         <OutputPath>bin\$(Configuration)\</OutputPath>
         <LangVersion>latest</LangVersion>
         <PackageId>DistantGreensCharms</PackageId>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -344,5 +346,8 @@
     <ItemGroup>
         <None Include=".gitignore"/>
         <None Include="ReadMe.adoc"/>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Resources\CharmIcons\" />
     </ItemGroup>
 </Project>

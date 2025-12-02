@@ -334,6 +334,14 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Reference Include="SFCore">
+            <HintPath>$(LocalRefs)\Mods\SFCore\SFCore.dll</HintPath>
+        </Reference>
+        <Reference Include="ItemChanger">
+            <HintPath>$(LocalRefs)\Mods\ItemChanger\ItemChanger.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
         <None Include=".gitignore"/>
         <None Include="ReadMe.adoc"/>
     </ItemGroup>

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using DistantGreensCharms.Settings;
 
 namespace DistantGreensCharms.Charms;
 
 public abstract class ACharm
 {
-    public abstract string Sprite { get; }
+    public abstract string SpritePath { get; }
     public abstract string Name { get; }
     public abstract string Description { get; }
     public abstract int DefaultCost { get; }
     public abstract string SceneName { get; }
     public abstract float X { get; } //Coordinates in Scene
     public abstract float Y { get; } //Coordinates in Scene
-    
-    public CharmState State { get; set; }
+
+    public abstract CharmState State(LocalSettings s);
+    public abstract void MarkAsEncountered(GlobalSettings s);
     
     // assigned at runtime by SFCore's CharmHelper
     public int Num { get; set; }
@@ -27,7 +29,7 @@ public abstract class ACharm
 
 public struct CharmState
 {
-    public bool Obtained;
+    public bool Got; // If player has charm
     public bool Equipped;
     public bool New; // Newly aquired for New Notification in Inventory
     public int Cost; // Notches

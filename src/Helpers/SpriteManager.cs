@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using ItemChanger;
 using UnityEngine;
 
@@ -12,7 +13,8 @@ public static class SpriteManager
     public static Sprite Get(string spriteName, float? ppu = null)
     {
         if (Sprites.TryGetValue(spriteName, out var sprite)) return sprite;
-        LoadTexture(spriteName, out Texture2D texture);
+        string resourceName = $"DistantGreensCharms.Resources.{spriteName}.png";
+        LoadTexture(resourceName, out Texture2D texture);
         sprite = (ppu is float) ? 
             Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f), (float) ppu) :
             Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(.5f, .5f));
@@ -22,11 +24,19 @@ public static class SpriteManager
 
     private static void LoadTexture(string name, out Texture2D texture)
     {
-        var location = Path.Combine(Path.GetDirectoryName(typeof(DistantGreensCharms).Assembly.Location)!, name);
-        var imageData = File.ReadAllBytes(location);
-        texture = new Texture2D(1,1,TextureFormat.RGBA32, false);
-        ImageConversion.LoadImage(texture, imageData, true);
-        texture.filterMode = FilterMode.Bilinear;
+        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name))
+        {
+            if (stream == null)
+            {
+                throw new FileNotFoundException($"Embedded resource not found: {name}");
+            }
+
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, buffer.Length);
+            texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            ImageConversion.LoadImage(texture, buffer, true);
+            texture.filterMode = FilterMode.Bilinear;
+        }
     }
 
     public static ISprite CastToISprite(Sprite sprite)

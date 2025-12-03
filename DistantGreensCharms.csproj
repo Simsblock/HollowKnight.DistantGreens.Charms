@@ -349,5 +349,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Resources\CharmIcons\" />
+      <Folder Include="Resources\HUDIcons\" />
     </ItemGroup>
 </Project>

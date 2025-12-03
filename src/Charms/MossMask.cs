@@ -21,18 +21,20 @@ public class MossMask : ACharm
         ModHooks.SetPlayerBoolHook += ChargeCharm;
     }
 
-    private bool charged = true;
+    private bool _charged = true;
+    private bool Useable => _charged && Equipped();
     private int CheckMaskActivation(int damage)
     {
-        if (!Equipped() || !charged || PlayerData.instance.health - damage > 0) return damage;
+        if (!Useable || PlayerData.instance.health - damage > 0) return damage;
         if (PlayerData.instance.health - damage > 0) return damage;
-        charged = false;
+        _charged = false;
+        PlayerData.instance.health = 1;
         return 0;
     }
 
     private bool ChargeCharm(string targetBool, bool value)
     {
-        if(targetBool == "atBench" && value && Equipped()) charged = true;
+        if(targetBool == "atBench" && value && Equipped()) _charged = true;
         return value;
     }
 }

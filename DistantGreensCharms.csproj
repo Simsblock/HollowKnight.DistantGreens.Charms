@@ -38,7 +38,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <!-- Path to DLL references required to build mod -->
-        <LocalRefs>References</LocalRefs>
+        <LocalRefs>$(MSBuildProgramFiles32)/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed</LocalRefs>
         <!-- The folder that exports will be generated in -->
         <ExportDir>Output</ExportDir>
     </PropertyGroup>
@@ -47,8 +47,8 @@
         <MakeDir Directories="$(ExportDir)"/>
         <MakeDir Directories="$(ExportDir)/zip"/>
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ExportDir)"/>
-        <Copy Condition="'$(DocumentationFile)' != ''" SourceFiles="ReadMe.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb;$(TargetDir)/$(TargetName).xml" DestinationFolder="$(ExportDir)/zip"/>
-        <Copy Condition="'$(DocumentationFile)' == ''" SourceFiles="ReadMe.md;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/"/>
+        <Copy Condition="'$(DocumentationFile)' != ''" SourceFiles="ReadMe.adoc;$(TargetPath);$(TargetDir)/$(TargetName).pdb;$(TargetDir)/$(TargetName).xml" DestinationFolder="$(ExportDir)/zip"/>
+        <Copy Condition="'$(DocumentationFile)' == ''" SourceFiles="ReadMe.adoc;$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ExportDir)/zip/"/>
         <ZipDirectory SourceDirectory="$(ExportDir)/zip" DestinationFile="$(ExportDir)/$(TargetName).zip"/>
         <RemoveDir Directories="$(ExportDir)/zip"/>
         <PropertyGroup>
@@ -342,6 +342,10 @@
         <Reference Include="ItemChanger">
             <HintPath>$(LocalRefs)\Mods\ItemChanger\ItemChanger.dll</HintPath>
         </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\CharmIcons\MossMask.png" />
+        <!-- Add more sprites as needed -->
     </ItemGroup>
     <ItemGroup>
         <None Include=".gitignore"/>

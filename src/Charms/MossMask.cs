@@ -20,7 +20,7 @@ public class MossMask : ACharm
     public override CharmState State(LocalSettings s) => s.MossMask;
     public override void MarkAsEncountered(GlobalSettings s) => s.EncounteredMossMask = true;
 
-    public override void Hook()
+    public override void Hook() //Pantehon error, doesnt reset after failing a pantheon todo
     {
         ModHooks.TakeHealthHook += CheckMaskActivation;
         ModHooks.SetPlayerBoolHook += ChargeCharmAtBench;

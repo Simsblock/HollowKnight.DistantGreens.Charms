@@ -11,10 +11,12 @@ namespace DistantGreensCharms.Charms;
 public class MossMask : ACharm
 {
     public static readonly MossMask Instance = new();
+    private bool _charged = true;
+    private bool Useable => _charged && Equipped();
     
-    public override string SpritePath  => "CharmIcons.MossMask"; //test
+    public override string SpritePath  => "CharmIcons.MossMask"; //testicon
     public override string Name => "Moss-Mask"; 
-    public override string Description => "Moss-Mask description"; //todo
+    public override string Description => "Appears like a Mask protecting its wearer.\n Shields against critical damage,but shatters on impact.\n If shattered, the mask will repair itself while resting at a bench.";
     public override int DefaultCost => 3;
     public override string SceneName => "GG_Workshop"; //todo
     public override float X => 17.65f; //todo
@@ -25,27 +27,22 @@ public class MossMask : ACharm
 
     private MossMaskHUD HUD { get; set; } = new();
 
-    public override void Hook() //Pantheon error, doesnt reset after failing a pantheon todo
+    public override void Hook()
     {
-        //HUDManager.Add(HUD);
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChange;
         ModHooks.TakeHealthHook += CheckMaskActivation;
         ModHooks.SetPlayerBoolHook += OnSetPlayerBool;
         On.GameManager.EquipCharm += OnEquipCharm;
-        On.GameManager.UnequipCharm += DeEquipCharm;
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChange;
+        On.GameManager.UnequipCharm += OnUnequipCharm;
         HUD.Hook();
     }
-
+    
     private void OnSceneChange(Scene from, Scene to)
     {
         if (!Equipped()) return;
-        else if (to.name.Contains("Dream")) SetCharged(true);
+        if (to.name.Contains("Dream")) SetCharged(true);
         else if (to.name.Contains("GG_Atrium") || to.name.Equals("GG_Workshop")) SetCharged(true);
-        //else if (to.name.Contains("GG_") && !BossSequenceController.IsInSequence ) SetCharged(true); //IsInSequence tells us if in Pantheon, but is still true when getting returned from it -> Atrium or Workshop
     }
-    
-    private bool _charged = true;
-    private bool Useable => _charged && Equipped();
     private int CheckMaskActivation(int damage)
     {
         if (!Useable || PlayerData.instance.health - damage > 0) return damage;
@@ -70,7 +67,7 @@ public class MossMask : ACharm
         if(charmnum == Num) HUD.SetVisibility(true);
     }
     
-    private void DeEquipCharm(On.GameManager.orig_UnequipCharm orig, GameManager self, int charmnum)
+    private void OnUnequipCharm(On.GameManager.orig_UnequipCharm orig, GameManager self, int charmnum)
     {
         orig(self, charmnum);
         if(charmnum == Num) HUD.SetVisibility(false);

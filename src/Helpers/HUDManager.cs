@@ -18,17 +18,10 @@ public static class HUDManager
     {
         if (_isInitialized) return;
         
-        //UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChanged;
-        //ModHooks.AfterSavegameLoadHook += OnSaveLoaded;
+        ModHooks.AfterSavegameLoadHook += OnSaveLoaded;
         
         _isInitialized = true;
         DistantGreensCharms.Instance.Log("[HUDHelper] Initialized");
-    }
-    
-    private static void OnSceneChanged(Scene from, Scene to)
-    {
-        DistantGreensCharms.Instance.Log($"[HUDHelper] Scene changed: {from.name} -> {to.name}");
-        RecreateAllElements();
     }
 
     private static void OnSaveLoaded(SaveGameData data)
@@ -67,18 +60,17 @@ public static class HUDManager
         gameObject.layer = 5;
 
         SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
-        spriteRenderer.enabled = hudElement.Visible;
-        spriteRenderer.sprite = SpriteManager.Get(hudElement.SpritePath);
         spriteRenderer.sortingLayerName = "HUD";
-        // spriteRenderer.sortingOrder = 5;
-        DistantGreensCharms.Instance.Log("spriterenderer created: "+(spriteRenderer != null).ToString());
+        //spriteRenderer.sortingOrder = hudElement.SortingOrder; //Seems irrelevant
+        spriteRenderer.enabled = hudElement.Visible;
+        spriteRenderer.sprite = SpriteManager.Get(hudElement.DefaultSpritePath);
 
         GameObject gameObjectParent = GameCameras.instance.hudCanvas;
         gameObject.transform.SetParent(gameObjectParent.transform);
 
         gameObject.transform.localPosition =
             new Vector3(hudElement.X, hudElement.Y, hudElement.Z);
-        // gameObject.transform.localScale = Vector3.one * 0.7f;
+        gameObject.transform.localScale = Vector3.one * hudElement.Scale;
         
         gameObject.transform.SetParent(gameObjectParent.transform);
         
@@ -86,7 +78,6 @@ public static class HUDManager
 
         if (!isRecreation && !HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
         else Get(hudElement.Name).GameObject = gameObject;
-        //Log ERROR
     }
     
     public static AHUDElement Get(string key)

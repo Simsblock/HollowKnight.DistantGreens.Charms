@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace DistantGreensCharms.Helper;
 
-public static class HUDHelper
+public static class HUDManager
 {
     private static bool _isInitialized = false;
     private static Dictionary<string, AHUDElement> HUDElements = new();
@@ -49,10 +49,10 @@ public static class HUDHelper
         }
         
         // Recreate each element
-        //foreach (var element in elementsToRecreate)
-        //{
-        //    GameManager.instance.StartCoroutine(AddWhenReady(element, isRecreation: true));
-        //}
+        foreach (var element in elementsToRecreate)
+        {
+            GameManager.instance.StartCoroutine(AddWhenReady(element, isRecreation: true));
+        }
     }
 
     public static void Add(AHUDElement hudElement)
@@ -60,32 +60,36 @@ public static class HUDHelper
         GameManager.instance.StartCoroutine(AddWhenReady(hudElement));
     }
     
-    private static IEnumerator AddWhenReady(AHUDElement hudElement)
+    private static IEnumerator AddWhenReady(AHUDElement hudElement, bool isRecreation = false)
     {
         yield return WaitForUI();
+        DistantGreensCharms.Instance.Log("Add started");
         GameObject gameObject = new(hudElement.Name);
-        GameObject gameObjectParent = GameObject.Find($"_GameCameras/HudCamera/Hud Canvas{hudElement.ParentRoute}"); //default if ParentRoute == null -> Hud Canvas
+        gameObject.layer = 5;
+        DistantGreensCharms.Instance.Log("gameobject created: "+(gameObject != null).ToString());
+
+        SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = SpriteManager.Get(hudElement.SpritePath);
+        spriteRenderer.sortingLayerName = "HUD";
+        // spriteRenderer.sortingOrder = 5;
+        DistantGreensCharms.Instance.Log("spriterenderer created: "+(spriteRenderer != null).ToString());
+        
+        //GameObject gameObjectParent = GameObject.Find(hudElement.ParentName ?? "Hud Canvas");
+        //GameObject gameObjectParent = GameObject.Find("_GameCameras/HudCamera/Hud Canvas");
+        GameObject gameObjectParent = GameCameras.instance.hudCanvas;
+        DistantGreensCharms.Instance.Log("Parent getted: "+(gameObjectParent != null).ToString());
         gameObject.transform.SetParent(gameObjectParent.transform);
+
+        gameObject.transform.localPosition =
+            new Vector3(hudElement.X, hudElement.Y, hudElement.Z);
+        // gameObject.transform.localScale = Vector3.one * 0.7f;
         
-        RectTransform rt = gameObject.AddComponent<RectTransform>();
-        rt.anchorMin = hudElement.LocationAttributes.anchorMin;
-        rt.anchorMax = hudElement.LocationAttributes.anchorMax;
-        rt.pivot = hudElement.LocationAttributes.pivot;
-        rt.anchoredPosition = hudElement.LocationAttributes.anchoredPosition;
-        rt.sizeDelta = hudElement.LocationAttributes.sizeDelta;
-        rt.localScale = hudElement.LocationAttributes.localScale;
-        
-        Image image = gameObject.AddComponent<Image>();
-        
-        if (hudElement.SpritePath != null)
-        {
-            image.sprite = SpriteManager.Get(hudElement.SpritePath);
-            image.preserveAspect = true;
-        }
+        DistantGreensCharms.Instance.Log("gameobjectParent create: "+ (gameObjectParent==null).ToString());
+        gameObject.transform.SetParent(gameObjectParent.transform);
         
         hudElement.GameObject = gameObject;
         
-        if(!HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
+        if(!isRecreation && !HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
         //Log ERROR
     }
     
@@ -108,11 +112,14 @@ public static class HUDHelper
         if (hudElement == null) return;
         Sprite sprite = SpriteManager.Get(spritePath);
         if(sprite == null) return;
-        hudElement.Icon.sprite = sprite;
+        hudElement.SpriteRenderer.sprite = sprite;
     }
     
     private static IEnumerator WaitForUI()
     {
+        DistantGreensCharms.Instance.Log("GameManager is null: "+ (GameManager.instance==null).ToString());
+        DistantGreensCharms.Instance.Log("GameManager UI is null: "+ (GameManager.instance.ui==null).ToString());
+        DistantGreensCharms.Instance.Log("GameManager UI Gameobject is null: "+ (GameManager.instance.ui.gameObject==null).ToString());
         yield return new WaitWhile(()=> 
             GameManager.instance is null ||
             GameManager.instance.ui is null ||

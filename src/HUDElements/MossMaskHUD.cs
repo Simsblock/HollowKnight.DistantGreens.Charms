@@ -1,35 +1,39 @@
 ﻿using DistantGreensCharms.Helper;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DistantGreensCharms.HUDElements;
 
 public class MossMaskHUD : AHUDElement
 {
     public override string Name => "Moss-Mask";
-    public override string SpritePath => "HUDIcons.MossMask_0";
-    public override bool Visible { get; set; } = false;
-    public override RectTransformAttributes LocationAttributes => new()
-    {
-        anchorMin = new Vector2(0f,0f),
-        anchorMax = new Vector2(0f,0f),
-        pivot = new Vector2(0f,0f),
-        anchoredPosition = new Vector2(0f,0f),
-        sizeDelta = new Vector2(0f,0f),
-        localScale = new Vector2(0f,0f)
-    };
+    public override string SpritePath => "CharmIcons.MossMask";
     
-    public string BrokenSpritePath => "HUDIcons.MossMask_1";
+    public override float X => 0f;
+    public override float Y => 0f;
+
+    //public override string ParentName => "Health";
+
+    public string BrokenSpritePath => "CharmIcons.MossMask";
     public override void SetVisibility(bool visibility)
     {
+        DistantGreensCharms.Instance.Log("GameObject is null: "+(GameObject == null).ToString());
+        DistantGreensCharms.Instance.Log("Icon is null: "+(SpriteRenderer == null).ToString());
+        DistantGreensCharms.Instance.Log("Icon in go is null: "+(GameObject.GetComponent<Image>() == null).ToString());
         if(!visibility)
         {
-            Icon.sprite = SpriteManager.Get(BrokenSpritePath);
+            SpriteRenderer.sprite = SpriteManager.Get(BrokenSpritePath);
             new WaitForSeconds(0.5f);
         }
         else
         {
-            Icon.sprite = SpriteManager.Get(SpritePath);
+            SpriteRenderer.sprite = SpriteManager.Get(SpritePath);
         }
         base.SetVisibility(visibility);
+    }
+
+    public void Hook()
+    {
+        HUDManager.Add(this);
     }
 }

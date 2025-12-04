@@ -16,7 +16,7 @@ using UObject = UnityEngine.Object;
 
 namespace DistantGreensCharms
 {
-    internal class DistantGreensCharms() : Mod("DistantGreens.Charms"), ILocalSettings<LocalSettings>, IGlobalSettings<GlobalSettings> //name
+    internal class DistantGreensCharms() : Mod("DistantGreens.Charms"), ILocalSettings<LocalSettings>//, IGlobalSettings<GlobalSettings> //name
     {
         public override string GetVersion()
         {
@@ -44,6 +44,7 @@ namespace DistantGreensCharms
             Log("Initializing");
 
             Instance = this;
+            HUDManager.Initialize();
 
             foreach (ACharm charm in Charms)
             {

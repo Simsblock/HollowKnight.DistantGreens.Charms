@@ -1,6 +1,9 @@
-﻿using DistantGreensCharms.Settings;
+﻿using DistantGreensCharms.Helper;
+using DistantGreensCharms.HUDElements;
+using DistantGreensCharms.Settings;
 using ItemChanger.Items;
 using Modding;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace DistantGreensCharms.Charms;
@@ -20,14 +23,19 @@ public class MossMask : ACharm
     public override CharmState State(LocalSettings s) => s.MossMask;
     public override void MarkAsEncountered(GlobalSettings s) => s.EncounteredMossMask = true;
 
-    public override void Hook() //Pantehon error, doesnt reset after failing a pantheon todo
-    {
-        ModHooks.TakeHealthHook += CheckMaskActivation;
-        ModHooks.SetPlayerBoolHook += ChargeCharmAtBench;
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChange;
+    private MossMaskHUD HUD { get; set; } = new();
 
+    public override void Hook() //Pantheon error, doesnt reset after failing a pantheon todo
+    {
+        //HUDManager.Add(HUD);
+        ModHooks.TakeHealthHook += CheckMaskActivation;
+        ModHooks.SetPlayerBoolHook += OnSetPlayerBool;
+        On.GameManager.EquipCharm += OnEquipCharm;
+        On.GameManager.UnequipCharm += DeEquipCharm;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChange;
+        HUD.Hook();
     }
-    
+
     private void OnSceneChange(Scene from, Scene to)
     {
         if (!Equipped()) return;
@@ -45,9 +53,23 @@ public class MossMask : ACharm
         PlayerData.instance.health = 1;
         return 0;
     }
-    private bool ChargeCharmAtBench(string targetBool, bool value)
+
+    private bool OnSetPlayerBool(string target, bool value)
     {
-        if(targetBool == "atBench" && value && Equipped()) _charged = true;
+        if(target == "atBench" && value && Equipped()) _charged = true;
         return value;
     }
+    
+    private void OnEquipCharm(On.GameManager.orig_EquipCharm orig, GameManager self, int charmnum)
+    {
+        orig(self, charmnum);
+        if(charmnum == Num) HUD.SetVisibility(true);
+    }
+    
+    private void DeEquipCharm(On.GameManager.orig_UnequipCharm orig, GameManager self, int charmnum)
+    {
+        orig(self, charmnum);
+        if(charmnum == Num) HUD.SetVisibility(false);
+    }
+    
 }

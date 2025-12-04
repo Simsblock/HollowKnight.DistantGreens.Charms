@@ -7,29 +7,18 @@ namespace DistantGreensCharms.HUDElements;
 public class MossMaskHUD : AHUDElement
 {
     public override string Name => "Moss-Mask";
-    public override string SpritePath => "CharmIcons.MossMask";
+    public override string SpritePath => "HUDIcons.MossMask_0";
     
-    public override float X => 0f;
-    public override float Y => 0f;
+    public override float X => -5f;
+    public override float Y => 1f;
 
-    //public override string ParentName => "Health";
+    public string ChargedSpritePath => "HUDIcons.MossMask_0";
+    public string BrokenSpritePath => "HUDIcons.MossMask_1";
 
-    public string BrokenSpritePath => "CharmIcons.MossMask";
-    public override void SetVisibility(bool visibility)
+    public void UpdateSpriteState(bool charged)
     {
-        DistantGreensCharms.Instance.Log("GameObject is null: "+(GameObject == null).ToString());
-        DistantGreensCharms.Instance.Log("Icon is null: "+(SpriteRenderer == null).ToString());
-        DistantGreensCharms.Instance.Log("Icon in go is null: "+(GameObject.GetComponent<Image>() == null).ToString());
-        if(!visibility)
-        {
-            SpriteRenderer.sprite = SpriteManager.Get(BrokenSpritePath);
-            new WaitForSeconds(0.5f);
-        }
-        else
-        {
-            SpriteRenderer.sprite = SpriteManager.Get(SpritePath);
-        }
-        base.SetVisibility(visibility);
+        if (charged) SpriteRenderer.sprite = SpriteManager.Get(ChargedSpritePath);
+        else SpriteRenderer.sprite = SpriteManager.Get(BrokenSpritePath);
     }
 
     public void Hook()

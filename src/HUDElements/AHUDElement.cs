@@ -14,8 +14,6 @@ public abstract class AHUDElement
     public abstract float X { get; }
     public abstract float Y { get; }
     public virtual float Z { get; private set; } = 0f;
-    
-    [CanBeNull] public virtual string ParentName { get; } //Exmaple: "/Soul Orb" for "_GameCameras/HudCamera/Hud Canvas/Soul Orb"
     public GameObject GameObject { get; set; } //Assigned at Runtime
     public SpriteRenderer SpriteRenderer  => GameObject.GetComponent<SpriteRenderer>(); //Assigned at Runtime
 

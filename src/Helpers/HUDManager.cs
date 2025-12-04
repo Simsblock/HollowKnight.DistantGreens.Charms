@@ -18,8 +18,8 @@ public static class HUDManager
     {
         if (_isInitialized) return;
         
-        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChanged;
-        ModHooks.AfterSavegameLoadHook += OnSaveLoaded;
+        //UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChanged;
+        //ModHooks.AfterSavegameLoadHook += OnSaveLoaded;
         
         _isInitialized = true;
         DistantGreensCharms.Instance.Log("[HUDHelper] Initialized");
@@ -63,33 +63,29 @@ public static class HUDManager
     private static IEnumerator AddWhenReady(AHUDElement hudElement, bool isRecreation = false)
     {
         yield return WaitForUI();
-        DistantGreensCharms.Instance.Log("Add started");
         GameObject gameObject = new(hudElement.Name);
         gameObject.layer = 5;
-        DistantGreensCharms.Instance.Log("gameobject created: "+(gameObject != null).ToString());
 
         SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        spriteRenderer.enabled = hudElement.Visible;
         spriteRenderer.sprite = SpriteManager.Get(hudElement.SpritePath);
         spriteRenderer.sortingLayerName = "HUD";
         // spriteRenderer.sortingOrder = 5;
         DistantGreensCharms.Instance.Log("spriterenderer created: "+(spriteRenderer != null).ToString());
-        
-        //GameObject gameObjectParent = GameObject.Find(hudElement.ParentName ?? "Hud Canvas");
-        //GameObject gameObjectParent = GameObject.Find("_GameCameras/HudCamera/Hud Canvas");
+
         GameObject gameObjectParent = GameCameras.instance.hudCanvas;
-        DistantGreensCharms.Instance.Log("Parent getted: "+(gameObjectParent != null).ToString());
         gameObject.transform.SetParent(gameObjectParent.transform);
 
         gameObject.transform.localPosition =
             new Vector3(hudElement.X, hudElement.Y, hudElement.Z);
         // gameObject.transform.localScale = Vector3.one * 0.7f;
         
-        DistantGreensCharms.Instance.Log("gameobjectParent create: "+ (gameObjectParent==null).ToString());
         gameObject.transform.SetParent(gameObjectParent.transform);
         
         hudElement.GameObject = gameObject;
-        
-        if(!isRecreation && !HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
+
+        if (!isRecreation && !HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
+        else Get(hudElement.Name).GameObject = gameObject;
         //Log ERROR
     }
     
@@ -99,14 +95,8 @@ public static class HUDManager
         return null;
     }
     
-    public static void UpdateVisibility(string key, bool visibility)
-    {
-        AHUDElement hudElement = Get(key);
-        if (hudElement == null) return;
-        hudElement.SetVisibility(visibility);
-    }
-    
-    public static void UpdateIcon(string key, string spritePath)
+    // Not used?
+    public static void UpdateSprite(string key, string spritePath)
     {
         AHUDElement hudElement = Get(key);
         if (hudElement == null) return;
@@ -117,9 +107,6 @@ public static class HUDManager
     
     private static IEnumerator WaitForUI()
     {
-        DistantGreensCharms.Instance.Log("GameManager is null: "+ (GameManager.instance==null).ToString());
-        DistantGreensCharms.Instance.Log("GameManager UI is null: "+ (GameManager.instance.ui==null).ToString());
-        DistantGreensCharms.Instance.Log("GameManager UI Gameobject is null: "+ (GameManager.instance.ui.gameObject==null).ToString());
         yield return new WaitWhile(()=> 
             GameManager.instance is null ||
             GameManager.instance.ui is null ||

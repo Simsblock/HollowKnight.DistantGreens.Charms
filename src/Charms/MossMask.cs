@@ -39,8 +39,9 @@ public class MossMask : ACharm
     private void OnSceneChange(Scene from, Scene to)
     {
         if (!Equipped()) return;
-        if (to.name.Contains("Dream")) _charged = true;
-        if (to.name.Contains("GG_") && !BossSequenceController.IsInSequence) _charged = true;
+        else if (to.name.Contains("Dream")) SetCharged(true);
+        else if (to.name.Contains("GG_Atrium") || to.name.Equals("GG_Workshop")) SetCharged(true);
+        //else if (to.name.Contains("GG_") && !BossSequenceController.IsInSequence ) SetCharged(true); //IsInSequence tells us if in Pantheon, but is still true when getting returned from it -> Atrium or Workshop
     }
     
     private bool _charged = true;
@@ -49,14 +50,17 @@ public class MossMask : ACharm
     {
         if (!Useable || PlayerData.instance.health - damage > 0) return damage;
         if (PlayerData.instance.health - damage > 0) return damage;
-        _charged = false;
+        SetCharged(false);
         PlayerData.instance.health = 1;
         return 0;
     }
 
     private bool OnSetPlayerBool(string target, bool value)
     {
-        if(target == "atBench" && value && Equipped()) _charged = true;
+        if (target == "atBench" && value && Equipped())
+        {
+            SetCharged(true);
+        }
         return value;
     }
     
@@ -71,5 +75,10 @@ public class MossMask : ACharm
         orig(self, charmnum);
         if(charmnum == Num) HUD.SetVisibility(false);
     }
-    
+
+    private void SetCharged(bool charged)
+    {
+        _charged = charged;
+        HUD.UpdateSpriteState(charged);
+    }
 }

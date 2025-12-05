@@ -16,7 +16,7 @@ public class MossMaskHUD : AHUDElement
     public override float X => -2.15f; 
     public override float Y => 0.3f; 
     public override float Scale => 1f;
-    public HUDAnimation BreakSpriteAnimation {get; set;}
+    public MossMaskHUDAnimation BreakSpriteAnimation {get; set;}
 
     public void UpdateSpriteState(bool charged)
     {
@@ -32,5 +32,18 @@ public class MossMaskHUD : AHUDElement
         {
             BreakSpriteAnimation.StartAnimation();
         }
+    }
+}
+
+public class MossMaskHUDAnimation : HUDAnimation
+{
+    public MossMaskHUDAnimation(IEnumerable<string> framePaths, GameObject gameObject, int fps = 12) : base(framePaths, gameObject, fps)
+    {
+    }
+
+    protected override IEnumerator PlayAnimation()
+    {
+        yield return base.PlayAnimation();
+        SpriteRenderer.enabled = false;
     }
 }

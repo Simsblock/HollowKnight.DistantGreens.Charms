@@ -1,4 +1,5 @@
-﻿using DistantGreensCharms.Helper;
+﻿using System.Collections;
+using DistantGreensCharms.Helper;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,7 +10,7 @@ public abstract class AHUDElement
 {
     public abstract string Name { get; }
     public abstract string DefaultSpritePath { get; }
-    public virtual bool Visible { get; private set; } = false;
+    public virtual bool Visible => SpriteRenderer.enabled;
 
     public abstract float X { get; }
     public abstract float Y { get; }
@@ -27,7 +28,6 @@ public abstract class AHUDElement
 
     public virtual void SetVisibility(bool visibility)
     {
-        Visible = visibility;
         SpriteRenderer.enabled = visibility;
     }
 }

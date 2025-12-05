@@ -6,6 +6,7 @@ using System.Reflection;
 using DistantGreensCharms.Charms;
 using DistantGreensCharms.Helper;
 using DistantGreensCharms.Settings;
+using IL.HutongGames.PlayMaker.Actions;
 using ItemChanger;
 using ItemChanger.Locations;
 using ItemChanger.UIDefs;
@@ -63,10 +64,10 @@ namespace DistantGreensCharms
                 BoolSetters[$"gotCharm_{charm.Num}"] = value =>
                 {
                     state.Got = value;
-                    if (value)
+                    /*if (value)
                     {
                         charm.MarkAsEncountered(globalSettings);
-                    }
+                    }*/
                 };
                 BoolGetters[$"newCharm_{charm.Num}"] = _ => state.New;
                 BoolSetters[$"newCharm_{charm.Num}"] = value => state.New = value;

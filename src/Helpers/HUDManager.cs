@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using DistantGreensCharms.HUDElements;
+using HutongGames.Utility;
 using JetBrains.Annotations;
 using Modding;
 using UnityEngine;
@@ -44,20 +45,22 @@ public static class HUDManager
         // Recreate each element
         foreach (var element in elementsToRecreate)
         {
-            GameManager.instance.StartCoroutine(AddWhenReady(element, isRecreation: true));
+            Add(element, isRecreation: true);
         }
     }
 
-    public static void Add(AHUDElement hudElement)
+    public static void Add(AHUDElement hudElement, bool isRecreation = false)
     {
-        GameManager.instance.StartCoroutine(AddWhenReady(hudElement));
+        GameManager.instance.StartCoroutine(AddWhenReady(hudElement, isRecreation));
     }
     
-    private static IEnumerator AddWhenReady(AHUDElement hudElement, bool isRecreation = false)
+    public static IEnumerator AddWhenReady(AHUDElement hudElement, bool isRecreation = false)
     {
         yield return WaitForUI();
         GameObject gameObject = new(hudElement.Name);
         gameObject.layer = 5;
+        
+        hudElement.GameObject = gameObject;
 
         SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerName = "HUD";
@@ -74,7 +77,7 @@ public static class HUDManager
         
         gameObject.transform.SetParent(gameObjectParent.transform);
         
-        hudElement.GameObject = gameObject;
+        
 
         if (!isRecreation && !HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
         else Get(hudElement.Name).GameObject = gameObject;
@@ -102,5 +105,48 @@ public static class HUDManager
             GameManager.instance is null ||
             GameManager.instance.ui is null ||
             GameManager.instance.ui.gameObject is null);
+    }
+}
+
+public class HUDAnimation
+{
+    public GameObject GameObject { get; set; }
+    public SpriteRenderer SpriteRenderer =>  GameObject.GetComponent<SpriteRenderer>();
+
+    public int fps;
+    public List<Sprite> frames = new();
+    
+    private bool _playing = false;
+
+    public HUDAnimation(IEnumerable<string> framePaths, GameObject gameObject, int fps = 12)
+    {
+        this.fps = fps;
+        GameObject = gameObject;
+        foreach (var path in framePaths)
+        {
+            frames.Add(SpriteManager.Get(path));
+        }
+    }
+
+    public void StartAnimation()
+    {
+        GameManager.instance.StartCoroutine(PlayAnimation());
+    }
+    private IEnumerator PlayAnimation()//bool disableSpriteRendererAtEnd = false)
+    {
+        if (_playing) yield break;
+        _playing = true;
+
+        int index = 0;
+        float frameTime = 1f / fps; 
+
+        while (index < frames.Count)
+        {
+            SpriteRenderer.sprite = frames[index];
+            index++;
+            yield return new WaitForSeconds(frameTime);
+        }
+        //SpriteRenderer.enabled = disableSpriteRendererAtEnd;
+        _playing = false;
     }
 }

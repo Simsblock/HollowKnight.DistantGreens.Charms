@@ -1,4 +1,7 @@
-﻿using DistantGreensCharms.Helper;
+﻿using System.Collections;
+using System.Collections.Generic;
+using DistantGreensCharms.Helper;
+using HutongGames.PlayMaker.Actions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,15 +12,25 @@ public class MossMaskHUD : AHUDElement
     public override string Name => "Moss-Mask";
     public override string DefaultSpritePath => "HUDIcons.MossMask_0";
     
-    public override float X => -5f; 
-    public override float Y => 1f; 
-    public override float Scale => 0.7f; 
+    public override float X => -2.15f; 
+    public override float Y => 0.3f; 
+    public override float Scale => 1f;
 
-    public string BrokenSpritePath => "HUDIcons.MossMask_1";
+    public HUDAnimation BreakSpriteAnimation {get; set;}
 
     public void UpdateSpriteState(bool charged)
     {
-        if (charged) SpriteRenderer.sprite = SpriteManager.Get(DefaultSpritePath);
-        else SpriteRenderer.sprite = SpriteManager.Get(BrokenSpritePath);
+        if(BreakSpriteAnimation is null) BreakSpriteAnimation = new(["HUDIcons.MossMask_1", "HUDIcons.MossMask_2", "HUDIcons.MossMask_3"], GameObject);
+        DistantGreensCharms.Instance.Log("Is sr null:" + (SpriteRenderer is null).ToString());
+        DistantGreensCharms.Instance.Log("Is Animation null:" + (BreakSpriteAnimation is null).ToString());
+        if (charged)
+        {
+            SpriteRenderer.sprite = SpriteManager.Get(DefaultSpritePath);
+            SetVisibility(true);
+        }
+        else
+        {
+            BreakSpriteAnimation.StartAnimation();
+        }
     }
 }

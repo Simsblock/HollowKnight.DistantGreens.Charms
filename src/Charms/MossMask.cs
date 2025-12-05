@@ -27,7 +27,7 @@ public class MossMask : ACharm
     public override CharmState State(LocalSettings s) => s.MossMask;
     //public override void MarkAsEncountered(GlobalSettings s) => s.EncounteredMossMask = true;
 
-    private MossMaskHUD HUD { get; set; } = new();
+    private MossMaskHUD HUD => MossMaskHUD.Instance;
 
     public override void Hook()
     {
@@ -36,18 +36,16 @@ public class MossMask : ACharm
         ModHooks.SetPlayerBoolHook += OnSetPlayerBool;
         On.GameManager.EquipCharm += OnEquipCharm;
         On.GameManager.UnequipCharm += OnUnequipCharm;
-        HUD.Hook();
     }
     
     private void OnSceneChange(Scene from, Scene to)
     {
         if (!Equipped()) return;
-        if (to.name.Contains("Dream")) SetCharged(true);
-        else if (to.name.Contains("GG_Atrium") || to.name.Equals("GG_Workshop")) SetCharged(true);
+        if (to.name.Contains("Dream") || to.name.Contains("GG_Atrium") || to.name.Equals("GG_Workshop")) SetCharged(true);
     }
     private int CheckMaskActivation(int damage)
     {
-        if (!Useable || PlayerData.instance.health - damage > 0) return damage;
+        if (!Useable) return damage;
         if (PlayerData.instance.health - damage > 0) return damage;
         SetCharged(false);
         PlayerData.instance.health = 1;
@@ -66,12 +64,14 @@ public class MossMask : ACharm
     private void OnEquipCharm(On.GameManager.orig_EquipCharm orig, GameManager self, int charmnum)
     {
         orig(self, charmnum);
+        DistantGreensCharms.Instance.Log("Onequip: "+(HUD is null).ToString());
         if(charmnum == Num) HUD.SetVisibility(true);
     }
     
     private void OnUnequipCharm(On.GameManager.orig_UnequipCharm orig, GameManager self, int charmnum)
     {
         orig(self, charmnum);
+        DistantGreensCharms.Instance.Log("OnUnequip: "+(HUD is null).ToString());
         if(charmnum == Num) HUD.SetVisibility(false);
     }
 

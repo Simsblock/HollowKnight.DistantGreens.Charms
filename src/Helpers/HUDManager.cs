@@ -61,12 +61,12 @@ public static class HUDManager
         gameObject.layer = 5;
         
         hudElement.GameObject = gameObject;
-
-        SpriteRenderer spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
-        spriteRenderer.sortingLayerName = "HUD";
+        
+        hudElement.SpriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        hudElement.SpriteRenderer.sortingLayerName = "HUD";
         //spriteRenderer.sortingOrder = hudElement.SortingOrder; //Seems irrelevant
-        spriteRenderer.enabled = hudElement.Visible;
-        spriteRenderer.sprite = SpriteManager.Get(hudElement.DefaultSpritePath);
+        hudElement.SpriteRenderer.enabled = false;
+        hudElement.SpriteRenderer.sprite = SpriteManager.Get(hudElement.DefaultSpritePath);
 
         GameObject gameObjectParent = GameCameras.instance.hudCanvas;
         gameObject.transform.SetParent(gameObjectParent.transform);
@@ -76,8 +76,6 @@ public static class HUDManager
         gameObject.transform.localScale = Vector3.one * hudElement.Scale;
         
         gameObject.transform.SetParent(gameObjectParent.transform);
-        
-        
 
         if (!isRecreation && !HUDElements.ContainsKey(hudElement.Name)) HUDElements.Add(hudElement.Name, hudElement);
         else Get(hudElement.Name).GameObject = gameObject;
@@ -87,16 +85,6 @@ public static class HUDManager
     {
         if (HUDElements.TryGetValue(key, out AHUDElement hudElement)) return hudElement;
         return null;
-    }
-    
-    // Not used?
-    public static void UpdateSprite(string key, string spritePath)
-    {
-        AHUDElement hudElement = Get(key);
-        if (hudElement == null) return;
-        Sprite sprite = SpriteManager.Get(spritePath);
-        if(sprite == null) return;
-        hudElement.SpriteRenderer.sprite = sprite;
     }
     
     private static IEnumerator WaitForUI()
@@ -132,7 +120,7 @@ public class HUDAnimation
     {
         GameManager.instance.StartCoroutine(PlayAnimation());
     }
-    private IEnumerator PlayAnimation()//bool disableSpriteRendererAtEnd = false)
+    protected virtual IEnumerator PlayAnimation()//bool disableSpriteRendererAtEnd = false)
     {
         if (_playing) yield break;
         _playing = true;

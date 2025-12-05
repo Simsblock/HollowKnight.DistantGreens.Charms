@@ -8,6 +8,7 @@ namespace DistantGreensCharms.HUDElements;
 
 public abstract class AHUDElement
 {
+    // CREATE STATIC INSTANCE OF HUD IN DERIVATIVE
     public abstract string Name { get; }
     public abstract string DefaultSpritePath { get; }
     public virtual bool Visible => SpriteRenderer.enabled;
@@ -19,15 +20,17 @@ public abstract class AHUDElement
     //public virtual int SortingOrder { get; private set; } = 5; //Standard for all HUD elements in HK is 5 //Seems irrelevant
     
     public GameObject GameObject { get; set; } //Assigned at Runtime
-    public SpriteRenderer SpriteRenderer  => GameObject.GetComponent<SpriteRenderer>(); //Assigned at Runtime
+    public SpriteRenderer SpriteRenderer { get; set; }
 
-    public virtual void Hook() //Overwrite if not supposed to assign itself, may add other Hooks
+    public virtual void Hook()
     {
         HUDManager.Add(this);
     }
 
     public virtual void SetVisibility(bool visibility)
     {
+        if(SpriteRenderer is null) SpriteRenderer = GameObject.GetComponent<SpriteRenderer>();
+        DistantGreensCharms.Instance.Log("SetVisbility: "+(SpriteRenderer is null).ToString());
         SpriteRenderer.enabled = visibility;
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using DistantGreensCharms.Charms;
 using DistantGreensCharms.Helper;
+using DistantGreensCharms.HUDElements;
 using DistantGreensCharms.Settings;
 using IL.HutongGames.PlayMaker.Actions;
 using ItemChanger;
@@ -29,6 +30,11 @@ namespace DistantGreensCharms
         internal static LocalSettings localSettings { get; private set; }
         internal static GlobalSettings globalSettings { get; private set; }
         
+        internal static List<AHUDElement> AHUDElements = new()
+        {
+            MossMaskHUD.Instance
+        };
+        
         internal static List<ACharm> Charms = new()
         {
             MossMask.Instance
@@ -47,6 +53,12 @@ namespace DistantGreensCharms
             Instance = this;
             HUDManager.Initialize();
 
+            foreach (AHUDElement hudElement in AHUDElements)
+            {
+                //Hook HUDElement to HUDManager
+                hudElement.Hook();
+            }
+            
             foreach (ACharm charm in Charms)
             {
                 // Add charm through SFCore

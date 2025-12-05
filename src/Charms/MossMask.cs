@@ -43,7 +43,7 @@ public class MossMask : ACharm
         if (!Equipped()) return;
         if (to.name.Contains("Dream") || to.name.Contains("GG_Atrium") || to.name.Equals("GG_Workshop")) SetCharged(true);
     }
-    private int CheckMaskActivation(int damage)
+    private int CheckMaskActivation(int damage) //JONIS FIX!!! todo
     {
         if (!Useable) return damage;
         if (PlayerData.instance.health - damage > 0) return damage;
@@ -64,14 +64,12 @@ public class MossMask : ACharm
     private void OnEquipCharm(On.GameManager.orig_EquipCharm orig, GameManager self, int charmnum)
     {
         orig(self, charmnum);
-        DistantGreensCharms.Instance.Log("Onequip: "+(HUD is null).ToString());
         if(charmnum == Num) HUD.SetVisibility(true);
     }
     
     private void OnUnequipCharm(On.GameManager.orig_UnequipCharm orig, GameManager self, int charmnum)
     {
         orig(self, charmnum);
-        DistantGreensCharms.Instance.Log("OnUnequip: "+(HUD is null).ToString());
         if(charmnum == Num) HUD.SetVisibility(false);
     }
 

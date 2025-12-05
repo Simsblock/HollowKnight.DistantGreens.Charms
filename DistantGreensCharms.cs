@@ -62,18 +62,19 @@ namespace DistantGreensCharms
             foreach (ACharm charm in Charms)
             {
                 // Add charm through SFCore
-                charm.Num = CharmHelper.AddSprites(SpriteManager.Get(charm.SpritePath))[0];
+                int num = CharmHelper.AddSprites(SpriteManager.Get(charm.SpritePath))[0];
+                charm.Num = num;
                 CharmState state = charm.State(localSettings);
                 state.Cost = charm.DefaultCost; // todo needs change maybe? 
                 
                 // HOOKS
                 // todo TO CHANGE
-                BoolGetters[$"equippedCharm_{charm.Num}"] = _ => state.Equipped;
-                BoolSetters[$"equippedCharm_{charm.Num}"] = value => state.Equipped = value;
-                IntGetters[$"charmCost_{charm.Num}"] = _ => state.Cost;
-                IntSetters[$"charmCost_{charm.Num}"] = value => state.Cost = value;
-                BoolGetters[$"gotCharm_{charm.Num}"] = _ => state.Got;
-                BoolSetters[$"gotCharm_{charm.Num}"] = value =>
+                BoolGetters[$"equippedCharm_{num}"] = _ => state.Equipped;
+                BoolSetters[$"equippedCharm_{num}"] = value => state.Equipped = value;
+                IntGetters[$"charmCost_{num}"] = _ => state.Cost;
+                IntSetters[$"charmCost_{num}"] = value => state.Cost = value;
+                BoolGetters[$"gotCharm_{num}"] = _ => state.Got;
+                BoolSetters[$"gotCharm_{num}"] = value =>
                 {
                     state.Got = value;
                     /*if (value)
@@ -81,10 +82,10 @@ namespace DistantGreensCharms
                         charm.MarkAsEncountered(globalSettings);
                     }*/
                 };
-                BoolGetters[$"newCharm_{charm.Num}"] = _ => state.New;
-                BoolSetters[$"newCharm_{charm.Num}"] = value => state.New = value;
-                TextEdits[(Key: $"CHARM_NAME_{charm.Num}", Sheet: "UI")] = () => charm.Name;
-                TextEdits[(Key: $"CHARM_DESC_{charm.Num}", Sheet: "UI")] = () => charm.Description;
+                BoolGetters[$"newCharm_{num}"] = _ => state.New;
+                BoolSetters[$"newCharm_{num}"] = value => state.New = value;
+                TextEdits[(Key: $"CHARM_NAME_{num}", Sheet: "UI")] = () => charm.Name;
+                TextEdits[(Key: $"CHARM_DESC_{num}", Sheet: "UI")] = () => charm.Description;
                     
                 charm.Hook(); //Hook Charms Game Events
                 
@@ -101,12 +102,12 @@ namespace DistantGreensCharms
                 string replacedCharmName = charm.Name.Replace('_', ' ');
                 var item = new ItemChanger.Items.CharmItem()
                 {
-                    charmNum = charm.Num,
+                    charmNum = num,
                     name = replacedCharmName,
                     UIDef = new MsgUIDef()
                     {
-                        name = new LanguageString("UI", $"CHARM_NAME_{charm.Num}"),
-                        shopDesc = new LanguageString("UI", $"CHARM_DESC_{charm.Num}"),
+                        name = new LanguageString("UI", $"CHARM_NAME_{num}"),
+                        shopDesc = new LanguageString("UI", $"CHARM_DESC_{num}"),
                         sprite = SpriteManager.CastToISprite(SpriteManager.Get(charm.SpritePath))
                     }
                 };
@@ -131,14 +132,12 @@ namespace DistantGreensCharms
                 
                 //location fixed
                 AbstractPlacements.Add(
+                    num,
                     location
                         .Wrap()
                         .Add(item)
-
                 );
-
-                //godhome mode assignment
-                // todo
+                
             }
             // modhooks
             ModHooks.GetPlayerBoolHook += ReadCharmBools;
@@ -156,17 +155,40 @@ namespace DistantGreensCharms
         
             Log("Initialized");
         }
-
-        public List<AbstractPlacement> AbstractPlacements = new();
-        public void PlaceAtAbstractLocations() //temporary method, might be relocated
-        {
-            ItemChangerMod.AddPlacements(AbstractPlacements, conflictResolution: PlacementConflictResolution.Ignore);
-        }
-
+        public Dictionary<int,AbstractPlacement> AbstractPlacements = new();
         private void PlaceItem(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
         {
-            PlaceAtAbstractLocations();
+            if (bossRush)
+            {
+                List<AbstractPlacement> placements = new();
+                foreach (ACharm charm in Charms)
+                {
+                    if (charm.Godhome)
+                    {
+                        //CharmState state = charm.State(localSettings);
+                        //state.Got = true;
+                        BoolSetters.TryGetValue($"gotCharm_{charm.Num}", out Action<bool> f);
+                        f(true);
+                    }
+                    else
+                    {
+                        AbstractPlacements.TryGetValue(charm.Num, out AbstractPlacement placement);
+                        placements.Add(placement);
+                    }
+                    ItemChangerMod.AddPlacements(placements, conflictResolution: PlacementConflictResolution.Ignore);
+                }
+            }
+            else if(false) //RandomizerMod.RandomizerMod.RS?.GenerationSettings != null
+            {}
+            else
+            {
+                PlaceAtAbstractLocations();
+            }
             orig(self, permaDeath, bossRush);
+        }
+        private void PlaceAtAbstractLocations()
+        {
+            ItemChangerMod.AddPlacements(AbstractPlacements.Values, conflictResolution: PlacementConflictResolution.Ignore);
         }
         
         private void CountOurCharms(On.PlayerData.orig_CountCharms orig, PlayerData self)

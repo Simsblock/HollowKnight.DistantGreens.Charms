@@ -16,6 +16,8 @@ public abstract class ACharm
     public abstract float X { get; } //Coordinates in Scene
     public abstract float Y { get; } //Coordinates in Scene
 
+    public virtual bool Godhome { get; } = true; //If Player receives Charm automatically in GodHome mode
+
     public abstract CharmState State(LocalSettings s);
     //public abstract void MarkAsEncountered(GlobalSettings s);
     

@@ -11,9 +11,9 @@ namespace DistantGreensCharms.Randomizer
 {
     public class RandomizerConnectionMenu
     {
+        // But doesnt align with colour state of AddCharms, but I dun feel like creating GlobalSettigns for that :>
         public bool AddCharms { get; set; } = true;
         public bool UseRandomizerCosts { get; set; } = true;
-        public int MaxCharmCostIncrease { get; set; } = 0; // Increase Salubra requirement
 
         private MenuPage connectionPage;
         private SmallButton connectionButton;
@@ -60,7 +60,6 @@ namespace DistantGreensCharms.Randomizer
             );
             
             Instance.connectionButton = new SmallButton(landingPage, "DistantGreensCharms");
-            //addCharmsToggle.SetValue(Instance.AddCharms);
         }
     }
 }

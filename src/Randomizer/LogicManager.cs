@@ -36,10 +36,10 @@ public static class LogicManager
         
         using (var s = asm.GetManifestResourceStream("DistantGreensCharms.Resources.LogicJsons.Locations.json"))
             lmb.DeserializeFile(LogicFileType.Locations, jsonFmt, s);
-        
-  
 
     }
+    
+    // Should include overwrites at some point!
     
     // If make this into library then this is a nescessary callable method
     

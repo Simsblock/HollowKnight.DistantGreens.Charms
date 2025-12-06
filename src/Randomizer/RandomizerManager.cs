@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DistantGreensCharms.Charms;
+using ItemChanger;
 using Mono.Security.X509;
 using RandomizerCore.Logic;
 using RandomizerMod.Menu;
@@ -17,17 +18,11 @@ public static class RandomizerManager
         // Hook to Randomizer
         RequestBuilder.OnUpdate.Subscribe(-9999f, SetNotchCosts);
         RequestBuilder.OnUpdate.Subscribe(-498f, DefineCharmsForRandomizer);
-        //RequestBuilder.OnUpdate.Subscribe(-200f, HandleRequest); //IncreaseMaxCharmCost // I THINK is handled in SetNotchCosts
-        //RequestBuilder.OnUpdate.Subscribe(0.01f, HandleRequest); //AddCarmsToVanilla // Could be Handled by not adding to RandomizerPool
-        RequestBuilder.OnUpdate.Subscribe(50, AddCharmsToPool); //Addcharmstopool
+        RequestBuilder.OnUpdate.Subscribe(50, AddCharmsToPool);
         
-        //move Hook Menu to here or leave it in main, idc tbh
+        RandoController.OnExportCompleted += StoreRandoNotchCosts;
         
-        //RandoController.OnExportCompleted += StoreRandoNotchCosts; // unessecary ?
-        //SettingsPM.OnResolveBoolTerm += ReadCharmLogicTermsForSettingsPM; // unessecary ?
-        //ProgressionInitializer.OnCreateProgressionInitializer += ReadCharmLogicTermsForProgression; // unessecary ?
-        
-        //SettingsLog.AfterLogSettings += LogRandoSettings; //unessecary
+        //SettingsLog.AfterLogSettings += LogRandoSettings; //Should add logging :3
     }
 
     //Notch Costs
@@ -78,6 +73,19 @@ public static class RandomizerManager
         return charmCosts;
     }
     
+    // Set Random Notch Cost for Charm sold in Shop
+    private static void StoreRandoNotchCosts(RandoController rc)
+    {
+        var pinit = (ProgressionInitializer)rc.ctx.InitialProgression;
+        var icPlayerData = ItemChangerMod.Modules.GetOrAdd<ItemChanger.Modules.PlayerDataEditModule>();
+        foreach (ACharm charm in DistantGreensCharms.Charms)
+        {
+            var t = rc.rb.lm.GetTermStrict(charm.DataName + "_COST");
+            var cost = pinit.Setters.First(s => s.Term == t).Value;
+            icPlayerData.AddPDEdit($"charmCost_{charm.Num}", cost);
+        }
+    }
+    
     //Define Charms
     private static void DefineCharmsForRandomizer(RequestBuilder rb)
     {
@@ -112,13 +120,14 @@ public static class RandomizerManager
             });
     }
     
-    //Add charms into pool
+    //Add charms & locations into pool
     private static void AddCharmsToPool(RequestBuilder rb)
     {
         if(!(rb.gs.PoolSettings.Charms && RandomizerConnectionMenu.Instance.AddCharms)) return;
         foreach (ACharm charm in DistantGreensCharms.Charms)
         {
             rb.AddItemByName(charm.DataName);
+            rb.AddLocationByName(charm.DataName);
         }
     }
     

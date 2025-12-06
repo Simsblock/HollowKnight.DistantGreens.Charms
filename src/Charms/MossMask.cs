@@ -20,9 +20,9 @@ public class MossMask : ACharm
     public override string Name => "Moss-Mask"; 
     public override string Description => "Appears like a Mask protecting its wearer.\nShields against critical damage,but shatters on impact.\n\nIf shattered, the mask will repair itself while resting at a bench.";
     public override int DefaultCost => 3;
-    public override string SceneName => "GG_Workshop"; //todo
-    public override float X => 17.65f; //todo
-    public override float Y => 6.41f; //todo
+    public override string SceneName => "GG_Workshop"; //todo 
+    public override float X => 17.65f; //todo 
+    public override float Y => 6.41f; //todo 
     
     public override CharmState State(LocalSettings s) => s.MossMask;
     //public override void MarkAsEncountered(GlobalSettings s) => s.EncounteredMossMask = true;

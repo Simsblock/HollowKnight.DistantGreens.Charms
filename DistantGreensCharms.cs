@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DistantGreensCharms.Charms;
 using DistantGreensCharms.Helper;
@@ -17,6 +18,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UObject = UnityEngine.Object;
 using DistantGreensCharms.Randomizer;
+using InControl;
 
 namespace DistantGreensCharms
 {
@@ -108,26 +110,21 @@ namespace DistantGreensCharms
                 Finder.DefineCustomItem(item);
                 
                 // Add location for Item through ItemChanger
+                // Item for location assigned later, because of Randomizer 4 Implementation!
                 var location = new CoordinateLocation()
                 {
-                    name = $"{charm.DataName}_Location", //maybe change to Num, but ID is more readable for hints etc.
+                    name = charm.DataName,
                     sceneName = charm.SceneName,
                     x = charm.X,
                     y = charm.Y,
                     elevation = 0f
                 };
                 Finder.DefineCustomLocation(location);
+                Locations.Add(charm, (item, location));
                 
                 // add pins for item and location for map mods
                 // todo
                 
-                // Add Fixed Locations
-                AbstractPlacements.Add(
-                    num,
-                    location
-                        .Wrap()
-                        .Add(item)
-                );
                 
                 // Enable Randomizer Connection Menu
                 if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
@@ -153,7 +150,7 @@ namespace DistantGreensCharms
         
             Log("Initialized");
         }
-        public Dictionary<int,AbstractPlacement> AbstractPlacements = new();
+        public Dictionary<ACharm,(ItemChanger.Items.CharmItem, CoordinateLocation)> Locations = new();
         private void PlaceItem(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
         {
             bool isRandomized = false;
@@ -164,37 +161,56 @@ namespace DistantGreensCharms
             
             if (isRandomized)
             {
+                List<AbstractPlacement> placements = new();
+                foreach ((ItemChanger.Items.CharmItem, CoordinateLocation) pair in Locations.Values)
+                {
+                    placements.Add(
+                        pair.Item2
+                            .Wrap()
+                    );
+                }
+                PlaceAtAbstractLocations(placements);
                  //maybe Add something for things that need certain locations, LIKE repairs
             }
             else if (bossRush)
             {
-                List<AbstractPlacement> placements = new();
-                
-                foreach (ACharm charm in Charms)
+                IEnumerable<ACharm> gg_Charms = Charms.Where(charm => charm.Godhome);
+                foreach (ACharm charm in gg_Charms)
                 {
+                    BoolSetters.TryGetValue($"gotCharm_{charm.Num}", out Action<bool> f);
+                    f(true);
+                }
 
-                    if (charm.Godhome)
-                    {
-                        BoolSetters.TryGetValue($"gotCharm_{charm.Num}", out Action<bool> f);
-                        f(true);
-                    }
-                    else
-                    {
-                        AbstractPlacements.TryGetValue(charm.Num, out AbstractPlacement placement);
-                        placements.Add(placement);
-                    }
-                    ItemChangerMod.AddPlacements(placements, conflictResolution: PlacementConflictResolution.Ignore);
+                List<AbstractPlacement> placements = new();
+                IEnumerable<(ItemChanger.Items.CharmItem, CoordinateLocation)> charmsToPlace = Locations.Where(_ => !gg_Charms.Contains(_.Key)).Select(_ => _.Value);
+                foreach ((ItemChanger.Items.CharmItem, CoordinateLocation) pair in charmsToPlace)
+                {
+                    placements.Add(
+                        pair.Item2
+                        .Wrap()
+                        .Add(pair.Item1)
+                    );
                 }
             }
+            
             else
             {
-                PlaceAtAbstractLocations();
+                List<AbstractPlacement> placements = new();
+                foreach ((ItemChanger.Items.CharmItem, CoordinateLocation) pair in Locations.Values)
+                {
+                    placements.Add(
+                        pair.Item2
+                            .Wrap()
+                            .Add(pair.Item1)
+                    );
+                }
+                PlaceAtAbstractLocations(placements);
             }
             orig(self, permaDeath, bossRush);
         }
-        private void PlaceAtAbstractLocations()
+        private void PlaceAtAbstractLocations(IEnumerable<AbstractPlacement> placements)
         {
-            ItemChangerMod.AddPlacements(AbstractPlacements.Values, conflictResolution: PlacementConflictResolution.Ignore);
+            ItemChangerMod.AddPlacements(placements, conflictResolution: PlacementConflictResolution.Ignore);
         }
         
         private void CountOurCharms(On.PlayerData.orig_CountCharms orig, PlayerData self)

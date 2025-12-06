@@ -34,7 +34,7 @@ namespace DistantGreensCharms
         
         internal static DistantGreensCharms Instance { get; private set; }
         internal static LocalSettings localSettings { get; private set; }
-        internal static GlobalSettings globalSettings { get; private set; }
+        //internal static GlobalSettings globalSettings { get; private set; }
         
         internal static List<AHUDElement> AHUDElements = new()
         {
@@ -46,11 +46,11 @@ namespace DistantGreensCharms
             MossMask.Instance
         };
         
-        internal Dictionary<string, Func<bool, bool>> BoolGetters = new(); //todo temp
-        internal Dictionary<string, Action<bool>> BoolSetters = new(); //todo temp
-        internal Dictionary<string, Func<int, int>> IntGetters = new(); //todo temp
-        internal Dictionary<string, Action<int>> IntSetters = new(); //todo temp
-        internal Dictionary<(string Key, string Sheet), Func<string?>> TextEdits = new(); //todo temp
+        internal Dictionary<string, Func<bool, bool>> BoolGetters = new();
+        internal Dictionary<string, Action<bool>> BoolSetters = new();
+        internal Dictionary<string, Func<int, int>> IntGetters = new();
+        internal Dictionary<string, Action<int>> IntSetters = new();
+        internal Dictionary<(string Key, string Sheet), Func<string?>> TextEdits = new();
         
         public override void Initialize()
         {
@@ -134,18 +134,17 @@ namespace DistantGreensCharms
 
                 
                 //Integrations
-                // Enable Randomizer Connection Menu
                 if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
                 {
                     RandomizerManager.Hook();
                 }
-
+                
                 if (ModHooks.GetMod("DebugMod") != null)
                 {
                     DebugModHelper.Hook();
                 }
             }
-            // modhooks
+            // Modhooks
             ModHooks.GetPlayerBoolHook += ReadCharmBools;
             ModHooks.SetPlayerBoolHook += WriteCharmBools;
             ModHooks.GetPlayerIntHook += ReadCharmCosts;
@@ -282,6 +281,7 @@ namespace DistantGreensCharms
         }
 
         //Globalsettings
+        /*
         public void OnLoadGlobal(GlobalSettings s)
         {
             globalSettings = s;
@@ -291,5 +291,6 @@ namespace DistantGreensCharms
         {
             return globalSettings;
         }
+        */
     }
 }

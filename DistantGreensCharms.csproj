@@ -354,8 +354,8 @@
         <Reference Include="RandomizerCore.Json">
             <HintPath>$(LocalRefs)/Mods/RandomizerCore.Json/RandomizerCore.Json.dll</HintPath>
         </Reference>
-        <Reference Include="RandoSettingsManager">
-            <HintPath>$(LocalRefs)/Mods/RandoSettingsManager/RandoSettingsManager.dll</HintPath>
+        <Reference Include="DebugMod">
+            <HintPath>$(LocalRefs)/Mods/DebugMod/DebugMod.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>

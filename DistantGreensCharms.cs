@@ -7,6 +7,7 @@ using System.Reflection;
 using DistantGreensCharms.Charms;
 using DistantGreensCharms.Helper;
 using DistantGreensCharms.HUDElements;
+using DistantGreensCharms.ModIntegrations.DebugMod;
 using DistantGreensCharms.Settings;
 using IL.HutongGames.PlayMaker.Actions;
 using ItemChanger;
@@ -125,11 +126,16 @@ namespace DistantGreensCharms
                 // add pins for item and location for map mods
                 // todo
                 
-                
+                //Integrations
                 // Enable Randomizer Connection Menu
                 if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
                 {
                     RandomizerManager.Hook();
+                }
+
+                if (ModHooks.GetMod("DebugMod") != null)
+                {
+                    DebugModHelper.Hook();
                 }
             }
             // modhooks

@@ -53,8 +53,8 @@ public static class RandomizerManager
         int vanillaTotal = rb.ctx.notchCosts.Sum();
         int variance = maxTotal - minTotal;
         
-        int minCost = Math.Max(0, (vanillaTotal - variance) / 10);
-        int maxCost = Math.Min(totalNotches * 6, (vanillaTotal + variance) / 10);
+        int maxCost = Math.Max(0, (vanillaTotal - variance) / 10);
+        int minCost = Math.Min(totalNotches, (vanillaTotal + variance) / 10);
         int randomNotchAmount = rng.Next(minCost, maxCost + 1); //The Amount of Notches which will be distributed
         Dictionary<int,int> charmCosts = DistantGreensCharms.Charms.ToDictionary(charm => charm.Num, charm => 0);
 

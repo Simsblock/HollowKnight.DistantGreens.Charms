@@ -15,12 +15,16 @@ public static class RandomizerManager
 {
     public static void Hook()
     {
+        RandomizerConnectionMenu.Hook();
+        
         // Hook to Randomizer
         RequestBuilder.OnUpdate.Subscribe(-9999f, SetNotchCosts);
         RequestBuilder.OnUpdate.Subscribe(-498f, DefineCharmsForRandomizer);
         RequestBuilder.OnUpdate.Subscribe(50, AddCharmsToPool);
         
         RandoController.OnExportCompleted += StoreRandoNotchCosts;
+        
+        LogicManager.Hook();
         
         //SettingsLog.AfterLogSettings += LogRandoSettings; //Should add logging :3
     }

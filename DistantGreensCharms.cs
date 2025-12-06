@@ -129,9 +129,7 @@ namespace DistantGreensCharms
                 // Enable Randomizer Connection Menu
                 if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
                 {
-                    RandomizerConnectionMenu.Hook();
                     RandomizerManager.Hook();
-                    LogicManager.Hook();
                 }
             }
             // modhooks

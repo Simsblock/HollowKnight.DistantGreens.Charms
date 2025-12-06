@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DistantGreensCharms.Helper;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -10,6 +11,7 @@ public abstract class AHUDElement
 {
     // CREATE STATIC INSTANCE OF HUD IN DERIVATIVE
     public abstract string Name { get; }
+    public virtual string DataName => Name.Replace(" ", "_") ?? default;
     public abstract string DefaultSpritePath { get; }
     public virtual bool Visible => SpriteRenderer.enabled;
 

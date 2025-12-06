@@ -342,6 +342,21 @@
         <Reference Include="ItemChanger">
             <HintPath>$(LocalRefs)\Mods\ItemChanger\ItemChanger.dll</HintPath>
         </Reference>
+        <Reference Include="MenuChanger">
+            <HintPath>$(LocalRefs)/Mods/MenuChanger/MenuChanger.dll</HintPath>
+        </Reference>
+        <Reference Include="RandomizerMod">
+            <HintPath>$(LocalRefs)/Mods/Randomizer 4/RandomizerMod.dll</HintPath>
+        </Reference>
+        <Reference Include="RandomizerCore">
+            <HintPath>$(LocalRefs)/Mods/RandomizerCore/RandomizerCore.dll</HintPath>
+        </Reference>
+        <Reference Include="RandomizerCore.Json">
+            <HintPath>$(LocalRefs)/Mods/RandomizerCore.Json/RandomizerCore.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="RandoSettingsManager">
+            <HintPath>$(LocalRefs)/Mods/RandoSettingsManager/RandoSettingsManager.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Resources\CharmIcons\MossMask.png" />
@@ -349,6 +364,7 @@
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_1.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_2.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_3.png" />
+        <EmbeddedResource Include="Resources\LogicJsons\Locations.json" />
         <!-- Add more sprites as needed -->
     </ItemGroup>
     <ItemGroup>

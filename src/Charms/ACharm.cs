@@ -10,6 +10,7 @@ public abstract class ACharm
     // CREATE STATIC INSTANCE OF CHARM IN DERIVATIVE
     public abstract string SpritePath { get; }
     public abstract string Name { get; }
+    public virtual string DataName => Name.Replace(" ", "_") ?? default;
     public abstract string Description { get; }
     public abstract int DefaultCost { get; }
     public abstract string SceneName { get; }

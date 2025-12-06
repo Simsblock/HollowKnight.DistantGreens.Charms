@@ -11,10 +11,12 @@ using IL.HutongGames.PlayMaker.Actions;
 using ItemChanger;
 using ItemChanger.Locations;
 using ItemChanger.UIDefs;
+using RandomizerMod.Menu;
 using SFCore;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UObject = UnityEngine.Object;
+using DistantGreensCharms.Randomizer;
 
 namespace DistantGreensCharms
 {
@@ -40,18 +42,18 @@ namespace DistantGreensCharms
             MossMask.Instance
         };
         
-        private Dictionary<string, Func<bool, bool>> BoolGetters = new(); //todo temp
-        private Dictionary<string, Action<bool>> BoolSetters = new(); //todo temp
-        private Dictionary<string, Func<int, int>> IntGetters = new(); //todo temp
-        private Dictionary<string, Action<int>> IntSetters = new(); //todo temp
-        private Dictionary<(string Key, string Sheet), Func<string?>> TextEdits = new(); //todo temp
+        internal Dictionary<string, Func<bool, bool>> BoolGetters = new(); //todo temp
+        internal Dictionary<string, Action<bool>> BoolSetters = new(); //todo temp
+        internal Dictionary<string, Func<int, int>> IntGetters = new(); //todo temp
+        internal Dictionary<string, Action<int>> IntSetters = new(); //todo temp
+        internal Dictionary<(string Key, string Sheet), Func<string?>> TextEdits = new(); //todo temp
         
         public override void Initialize()
         {
             Log("Initializing");
 
             Instance = this;
-            HUDManager.Initialize();
+            HUDManager.Hook();
 
             foreach (AHUDElement hudElement in AHUDElements)
             {
@@ -67,21 +69,14 @@ namespace DistantGreensCharms
                 CharmState state = charm.State(localSettings);
                 state.Cost = charm.DefaultCost; // todo needs change maybe? 
                 
-                // HOOKS
+                // Delegates for Hooks
                 // todo TO CHANGE
                 BoolGetters[$"equippedCharm_{num}"] = _ => state.Equipped;
                 BoolSetters[$"equippedCharm_{num}"] = value => state.Equipped = value;
                 IntGetters[$"charmCost_{num}"] = _ => state.Cost;
                 IntSetters[$"charmCost_{num}"] = value => state.Cost = value;
                 BoolGetters[$"gotCharm_{num}"] = _ => state.Got;
-                BoolSetters[$"gotCharm_{num}"] = value =>
-                {
-                    state.Got = value;
-                    /*if (value)
-                    {
-                        charm.MarkAsEncountered(globalSettings);
-                    }*/
-                };
+                BoolSetters[$"gotCharm_{num}"] = value => state.Got = value;
                 BoolGetters[$"newCharm_{num}"] = _ => state.New;
                 BoolSetters[$"newCharm_{num}"] = value => state.New = value;
                 TextEdits[(Key: $"CHARM_NAME_{num}", Sheet: "UI")] = () => charm.Name;
@@ -99,11 +94,10 @@ namespace DistantGreensCharms
                 // todo
                 
                 // Add item which gives charm through ItemChanger
-                string replacedCharmName = charm.Name.Replace('_', ' ');
                 var item = new ItemChanger.Items.CharmItem()
                 {
                     charmNum = num,
-                    name = replacedCharmName,
+                    name = charm.DataName,
                     UIDef = new MsgUIDef()
                     {
                         name = new LanguageString("UI", $"CHARM_NAME_{num}"),
@@ -116,21 +110,18 @@ namespace DistantGreensCharms
                 // Add location for Item through ItemChanger
                 var location = new CoordinateLocation()
                 {
+                    name = $"{charm.DataName}_Location", //maybe change to Num, but ID is more readable for hints etc.
+                    sceneName = charm.SceneName,
                     x = charm.X,
                     y = charm.Y,
-                    elevation = 0,
-                    sceneName = charm.SceneName,
-                    name = replacedCharmName
+                    elevation = 0f
                 };
                 Finder.DefineCustomLocation(location);
                 
                 // add pins for item and location for map mods
                 // todo
                 
-                // randomizer
-                // todo
-                
-                //location fixed
+                // Add Fixed Locations
                 AbstractPlacements.Add(
                     num,
                     location
@@ -138,6 +129,13 @@ namespace DistantGreensCharms
                         .Add(item)
                 );
                 
+                // Enable Randomizer Connection Menu
+                if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
+                {
+                    RandomizerConnectionMenu.Hook();
+                    RandomizerManager.Hook();
+                    LogicManager.Hook();
+                }
             }
             // modhooks
             ModHooks.GetPlayerBoolHook += ReadCharmBools;
@@ -158,15 +156,25 @@ namespace DistantGreensCharms
         public Dictionary<int,AbstractPlacement> AbstractPlacements = new();
         private void PlaceItem(On.UIManager.orig_StartNewGame orig, UIManager self, bool permaDeath, bool bossRush)
         {
-            if (bossRush)
+            bool isRandomized = false;
+            if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
+            {
+                isRandomized = RandomizerMod.RandomizerMod.RS?.GenerationSettings != null;
+            }
+            
+            if (isRandomized)
+            {
+                 //maybe Add something for things that need certain locations, LIKE repairs
+            }
+            else if (bossRush)
             {
                 List<AbstractPlacement> placements = new();
+                
                 foreach (ACharm charm in Charms)
                 {
+
                     if (charm.Godhome)
                     {
-                        //CharmState state = charm.State(localSettings);
-                        //state.Got = true;
                         BoolSetters.TryGetValue($"gotCharm_{charm.Num}", out Action<bool> f);
                         f(true);
                     }
@@ -178,8 +186,6 @@ namespace DistantGreensCharms
                     ItemChangerMod.AddPlacements(placements, conflictResolution: PlacementConflictResolution.Ignore);
                 }
             }
-            else if(false) //RandomizerMod.RandomizerMod.RS?.GenerationSettings != null
-            {}
             else
             {
                 PlaceAtAbstractLocations();

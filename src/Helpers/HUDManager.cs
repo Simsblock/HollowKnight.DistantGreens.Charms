@@ -15,7 +15,7 @@ public static class HUDManager
     private static bool _isInitialized = false;
     private static Dictionary<string, AHUDElement> HUDElements = new();
     
-    public static void Initialize()
+    public static void Hook()
     {
         if (_isInitialized) return;
         

@@ -20,6 +20,7 @@ using UnityEngine.SceneManagement;
 using UObject = UnityEngine.Object;
 using DistantGreensCharms.Randomizer;
 using InControl;
+using ItemChanger.Tags;
 
 namespace DistantGreensCharms
 {
@@ -108,6 +109,10 @@ namespace DistantGreensCharms
                         sprite = SpriteManager.CastToISprite(SpriteManager.Get(charm.SpritePath))
                     }
                 };
+                InteropTag itemTag = item.AddTag<InteropTag>();
+                itemTag.Message = charm.DataName;
+                itemTag.Properties["ModSource"] = "DistantGreensCharms";
+                itemTag.Properties["PoolGroup"] = "Charms";
                 Finder.DefineCustomItem(item);
                 
                 // Add location for Item through ItemChanger
@@ -120,11 +125,13 @@ namespace DistantGreensCharms
                     y = charm.Y,
                     elevation = 0f
                 };
+                InteropTag LocationTag = item.AddTag<InteropTag>();
+                itemTag.Message = $"{charm.DataName}_Location";
+                itemTag.Properties["ModSource"] = "DistantGreensCharms";
+                itemTag.Properties["PoolGroup"] = "Charms";
                 Finder.DefineCustomLocation(location);
                 Locations.Add(charm, (item, location));
-                
-                // add pins for item and location for map mods
-                // todo
+
                 
                 //Integrations
                 // Enable Randomizer Connection Menu

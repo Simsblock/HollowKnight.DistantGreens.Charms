@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DistantGreensCharms.Helper;
 using HutongGames.PlayMaker.Actions;
+using ItemChanger.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class MossMaskHUD : AHUDElement
     public override float X => -2.15f; 
     public override float Y => 0.3f; 
     public override float Scale => 1f;
+    //public override GameObject OverrideParent => GameCameras.instance.hudCanvas.FindChildInHierarchy("Health");
     public MossMaskHUDAnimation BreakSpriteAnimation {get; set;}
 
     public void UpdateSpriteState(bool charged)

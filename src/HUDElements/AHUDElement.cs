@@ -15,6 +15,8 @@ public abstract class AHUDElement
     public abstract string DefaultSpritePath { get; }
     public virtual bool Visible => SpriteRenderer.enabled;
 
+    public virtual GameObject OverrideParent { get; } = null;
+
     public abstract float X { get; }
     public abstract float Y { get; }
     public virtual float Z { get; private set; } = 0f; //No need to change this.

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DistantGreensCharms.HUDElements;
 using HutongGames.Utility;
+using ItemChanger.Extensions;
 using JetBrains.Annotations;
 using Modding;
 using UnityEngine;
@@ -68,7 +69,7 @@ public static class HUDManager
         hudElement.SpriteRenderer.enabled = false;
         hudElement.SpriteRenderer.sprite = SpriteManager.Get(hudElement.DefaultSpritePath);
 
-        GameObject gameObjectParent = GameCameras.instance.hudCanvas;
+        GameObject gameObjectParent = hudElement.OverrideParent ?? GameCameras.instance.hudCanvas;
         gameObject.transform.SetParent(gameObjectParent.transform);
 
         gameObject.transform.localPosition =

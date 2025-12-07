@@ -25,7 +25,6 @@ public class MossMask : ACharm
     public override float Y => 6.41f; //todo 
     
     public override CharmState State(LocalSettings s) => s.MossMask;
-    //public override void MarkAsEncountered(GlobalSettings s) => s.EncounteredMossMask = true;
 
     private MossMaskHUD HUD => MossMaskHUD.Instance;
 
@@ -43,13 +42,24 @@ public class MossMask : ACharm
         if (!Equipped()) return;
         if (to.name.Contains("Dream") || to.name.Contains("GG_Atrium") || to.name.Equals("GG_Workshop")) SetCharged(true);
     }
-    private int CheckMaskActivation(int damage) //JONIS FIX!!! todo
+    private int CheckMaskActivation(int damage)
     {
         if (!Useable) return damage;
-        if (PlayerData.instance.health - damage > 0) return damage;
-        SetCharged(false);
-        PlayerData.instance.health = 1;
-        return 0;
+        bool JonisBlessing = PlayerData.instance.equippedCharm_27;
+        if (JonisBlessing && PlayerData.instance.healthBlue+1 - damage <= 0) // Jonis gives Player 12 blueHealth BUT keeps 1 health -> +1
+        {
+            PlayerData.instance.health = 1;
+            PlayerData.instance.healthBlue = 0;
+            SetCharged(false);
+            return 0;
+        }
+        if (!JonisBlessing && PlayerData.instance.health - damage <= 0)
+        {
+            PlayerData.instance.health = 1; 
+            SetCharged(false); 
+            return 0;
+        }
+        return damage;
     }
 
     private bool OnSetPlayerBool(string target, bool value)

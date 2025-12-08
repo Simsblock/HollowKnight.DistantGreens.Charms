@@ -49,15 +49,10 @@ public static class HUDManager
             Add(element, isRecreation: true);
         }
     }
-
+    
     public static void Add(AHUDElement hudElement, bool isRecreation = false)
     {
-        GameManager.instance.StartCoroutine(AddWhenReady(hudElement, isRecreation));
-    }
-    
-    public static IEnumerator AddWhenReady(AHUDElement hudElement, bool isRecreation = false)
-    {
-        yield return WaitForUI();
+        //yield return WaitForUI();
         GameObject gameObject = new(hudElement.Name);
         gameObject.layer = 5;
         
@@ -86,14 +81,6 @@ public static class HUDManager
     {
         if (HUDElements.TryGetValue(key, out AHUDElement hudElement)) return hudElement;
         return null;
-    }
-    
-    private static IEnumerator WaitForUI()
-    {
-        yield return new WaitWhile(()=> 
-            GameManager.instance is null ||
-            GameManager.instance.ui is null ||
-            GameManager.instance.ui.gameObject is null);
     }
 }
 

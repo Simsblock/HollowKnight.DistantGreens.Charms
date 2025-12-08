@@ -5,7 +5,7 @@
         <TargetFramework>net472</TargetFramework>
         <AssemblyTitle>DistantGreensCharms</AssemblyTitle>
         <Product>DistantGreensCharms</Product>
-        <Description>A Hollow Knight mod.</Description>
+        <Description>A Hollow Knight mod. For more Info read the README!</Description>
         <Copyright>Copyright ©</Copyright>
         <AssemblyVersion>1.0.0.0</AssemblyVersion>
         <FileVersion>1.0.0.0</FileVersion>

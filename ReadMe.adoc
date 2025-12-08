@@ -1,8 +1,32 @@
-# DistantGreens.Charms
+# DistantGreens.charms
 
-A Hollow Knight mod which adds the Charms for a potential future mod called DistantGreens. +
-Native Integration with Randomizer 4 is planned. (Not yet implemented)
+## What is this?
+This is a Hollow Knight Mod adding charms to the game. +
+The charms are planned to be used in further Mods down the line.
 
-## Naming Conventions
+## Integrations
+The Mod has Integrations with:
+
+### Map Mods
+The charms locations get displayed on MapMods
+
+### Randomizer 4
+The Integration allows charms to be added to the RandomizerPool and for their charmNotches to Randomized as well. +
+The original charm locations also become new randomized locations.
+
+### DebugMod
+Charms are distributed with GiveAllCharms and taken away with RemoveAllCharms.
+
+## Known Bugs and Missing Features
+- MossMaskHUD -> loads before HUD is rendered IF equipped on load save
+- TickerManager -> Not yet implemented
+
+### Found an Issue or have Suggestions?
+Please open a GitHub issue or fork the repo and make a Pull-Request. Thank you!
+
+## Repo Naming Conventions
 - I-Prefix for Interfaces; eg.: IClass
 - A-Prefix for Abstract classes; eg.: AClass
+- _-Prefix for private attributes; eg.: private bool _charged
+- Properties and public attributes are capitalized; eg.: public bool Useable {get; set; } OR public bool X;
+- Parameters are not capitalized

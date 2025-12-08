@@ -1,3 +1,14 @@
 ﻿# Helpers
 
-Contains Helper Classes.
+## What does this contain?
+The Helpers folder contains a multitude of Helper and Manager classes for the Mod.
+
+Not all classes are strictly necessary, but offer features a dev might enjoy.
+
+The HUDAnimation class can be found in .\\HUDManager, no derivative is needed for a HUDAnimation. It is a simple solution to animate HUDElements.
+
+## How is it structured?
+The HUDElements folder contains the Helper and Manager classes directly, if needed for organizational purposes subfolders may be added.
+
+## Known Bugs and Missing Features
+- TickerManager -> Not yet implemented

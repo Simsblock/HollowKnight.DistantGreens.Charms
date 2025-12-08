@@ -1,3 +1,14 @@
-﻿# Helpers
+﻿# HUDElements
 
-Contains HUDElements
+## What does this contain?
+The HUDElements folder contains the abstract AHUDElement class and all it's created derivatives.
+
+HUDElements are a simple way to display Sprites in the HUD.
+
+HUDElements are often used with the HUDAnimation class found in ..\Helpers\HUDManager, no derivative is needed for a HUDAnimation.
+
+## How is it structured?
+The HUDElements folder contains the AHUDElement class and all AHUDElement derivatives directly, if needed for organizational purposes subfolders may be added.
+
+## Known Bugs and Missing Features
+- MossMaskHUD -> loads before HUD is rendered IF equipped on load save

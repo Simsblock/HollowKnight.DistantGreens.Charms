@@ -1,3 +1,9 @@
 ﻿# Charms
 
-Contains charm scripts.
+## What does this contain?
+The Charms folder contains the abstract ACharm class and all it's created derivatives.
+
+ACharms are a simple way to create in game Charms using SFCore and ItemChanger.
+
+## How is it structured?
+The Charms folder contains the ACharm class and all ACharm derivatives directly, if needed for organizational purposes subfolders may be added.

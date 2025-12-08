@@ -1,0 +1,11 @@
+﻿# Mod Integrations
+
+## What does this contain?
+The ModIntegrations folder contains Integrations into other Mods, NOT dependencies.
+
+This is used for special Mods eg.: Randomizer 4 and Synergies or Similiar with different "normal" Mods. +
+Eg.: Charm Mods
+
+## How is it structured?
+The ModIntegrations Folder contains subfolders which share the other Mods name, **UNLESS** it is one Integration for multiple Mods, int that case more subfolders may be created or a describing name may be choosen. + 
+Eg.: Randomizer -> RandomizerCore, RandomizerMod, ...

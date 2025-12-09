@@ -4,18 +4,32 @@
 This is a Hollow Knight Mod adding charms to the game. +
 The charms are planned to be used in further Mods down the line.
 
+## Dependencies
+The Mod needs following to function:
+- https://github.com/SFGrenade/SFCore[SFCore]
+- https://github.com/homothetyhk/HollowKnight.ItemChanger[ItemChanger]
+
 ## Integrations
 The Mod has Integrations with:
 
 ### Map Mods
-The charms locations get displayed on MapMods
+The charms locations get displayed on MapMods through Pins. (No extra dependencies)
 
 ### Randomizer 4
 The Integration allows charms to be added to the RandomizerPool and for their charmNotches to Randomized as well. +
 The original charm locations also become new randomized locations.
 
+#### Dependencies for this Integration
+- https://github.com/homothetyhk/RandomizerMod[RandomizerMod]
+- https://github.com/homothetyhk/RandomizerCore[RandomizerCore]
+- https://github.com/homothetyhk/RandomizerCore.Json[RandomizerCore.Json]
+- https://github.com/homothetyhk/HollowKnight.MenuChanger[MenuChanger]
+
 ### DebugMod
 Charms are distributed with GiveAllCharms and taken away with RemoveAllCharms.
+
+#### Dependencies for this Integration
+- https://github.com/TheMulhima/HollowKnight.DebugMod[DebugMod]
 
 ## Known Bugs and Missing Features
 - MossMaskHUD -> loads before HUD is rendered IF equipped on load save

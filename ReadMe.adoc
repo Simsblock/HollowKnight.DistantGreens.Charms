@@ -6,6 +6,7 @@ The charms are planned to be used in further Mods down the line.
 
 ## Dependencies
 The Mod needs following to function:
+
 - https://github.com/SFGrenade/SFCore[SFCore]
 - https://github.com/homothetyhk/HollowKnight.ItemChanger[ItemChanger]
 

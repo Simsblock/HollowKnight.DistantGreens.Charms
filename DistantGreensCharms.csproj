@@ -364,7 +364,11 @@
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_1.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_2.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_3.png" />
-        <EmbeddedResource Include="Resources\paint.png" />
+        <EmbeddedResource Include="Resources\Misc\paint0.png" />
+        <EmbeddedResource Include="Resources\Misc\paint1.png" />
+        <EmbeddedResource Include="Resources\Misc\paint2.png" />
+        <EmbeddedResource Include="Resources\Misc\paint3.png" />
+        <EmbeddedResource Include="Resources\Misc\paint4.png" />
         <EmbeddedResource Include="Resources\LogicJsons\Locations.json" />
         <!-- Add more sprites as needed -->
     </ItemGroup>

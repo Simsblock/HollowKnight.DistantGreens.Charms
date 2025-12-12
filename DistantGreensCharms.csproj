@@ -364,6 +364,7 @@
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_1.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_2.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_3.png" />
+        <EmbeddedResource Include="Resources\paint.png" />
         <EmbeddedResource Include="Resources\LogicJsons\Locations.json" />
         <!-- Add more sprites as needed -->
     </ItemGroup>

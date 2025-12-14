@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HutongGames.PlayMaker;
 
 namespace DistantGreensCharms.Helper;
 
@@ -30,5 +31,29 @@ public static class FSMManager
         {
             edit(fsm);
         }
+    }
+}
+
+public class ExecuteLambda : FsmStateAction
+{
+    //For editing FSMs
+    private readonly Action _method;
+    public ExecuteLambda(Action method)
+    {
+        _method = method;
+    }
+
+    public override void OnEnter()
+    {
+        try
+        {
+            _method();
+        }
+        catch (Exception e)
+        {
+            LogError("Error in ExecuteLambda:\n" + e);
+        }
+
+        Finish();
     }
 }

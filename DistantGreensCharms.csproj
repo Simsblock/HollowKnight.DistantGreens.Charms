@@ -364,6 +364,8 @@
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_1.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_2.png" />
         <EmbeddedResource Include="Resources\HUDIcons\MossMask_3.png" />
+        <EmbeddedResource Include="Resources\CharmIcons\Painters_Spirit.png" />
+        <EmbeddedResource Include="Resources\Items\Incomplete_Painters_Spirit.png" />
         <EmbeddedResource Include="Resources\Misc\paint0.png" />
         <EmbeddedResource Include="Resources\Misc\paint1.png" />
         <EmbeddedResource Include="Resources\Misc\paint2.png" />

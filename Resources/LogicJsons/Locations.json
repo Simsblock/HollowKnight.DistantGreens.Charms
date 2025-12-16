@@ -2,5 +2,9 @@
   {
     "name": "Moss-Mask",
     "logic": "GODTUNERUNLOCK + DREAMNAIL>1"
+  },
+  {
+    "name": "Painters_Spirit",
+    "logic": "GODTUNERUNLOCK + DREAMNAIL>1"
   }
 ]

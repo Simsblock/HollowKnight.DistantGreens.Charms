@@ -165,7 +165,7 @@ namespace DistantGreensCharms
             bool isRandomized = false;
             if (ModHooks.GetMod("MenuChanger") != null && ModHooks.GetMod("Randomizer 4") != null)
             {
-                isRandomized = RandomizerConnectionMenu.Instance.AddCharms;
+                isRandomized = RandomizerConnectionMenu.Instance.AddCharms && RandomizerMod.RandomizerMod.RS?.GenerationSettings != null;
             }
             
             if (isRandomized)

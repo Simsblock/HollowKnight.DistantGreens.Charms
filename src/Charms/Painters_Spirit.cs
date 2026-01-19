@@ -33,6 +33,7 @@ public class Painters_Spirit : ACharm
     public override CharmState State(LocalSettings s) => s.Painters_Spirit;
     
     //private GameObject _cycloneSlashPrefab;
+    private const float _damage_multiplier = 3.5f;
     private GameObject _dashSlashPrefab;
     private GameObject _greatSlashPrefab;
     private PlayMakerFSM gSlash_damageFSM;
@@ -98,8 +99,8 @@ public class Painters_Spirit : ACharm
         orig(self, charmnum);
         if(charmnum != Num) return;
         // No dmg update for cyclone since its already strong + I cant figure out where its damage is calculated! Could increase Cyclone Timer, need to change sprite on thingi
-        gSlash_damageFSM.FsmVariables.FindFsmFloat("Multiplier").Value = 3.5f; //maybe raise to 4 since Unbreakable Strength with Quick Slash is SO op
-        dSlash_damageFSM.FsmVariables.FindFsmFloat("Multiplier").Value = 3.5f;
+        gSlash_damageFSM.FsmVariables.FindFsmFloat("Multiplier").Value = _damage_multiplier; //maybe raise to 4 since Unbreakable Strength with Quick Slash is SO op
+        dSlash_damageFSM.FsmVariables.FindFsmFloat("Multiplier").Value = _damage_multiplier;
     }
     private void OnUnequipCharm(On.GameManager.orig_UnequipCharm orig, GameManager self, int charmnum)
     {

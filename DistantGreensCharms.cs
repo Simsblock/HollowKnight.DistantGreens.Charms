@@ -43,7 +43,8 @@ namespace DistantGreensCharms
         internal static List<ACharm> Charms = new()
         {
             MossMask.Instance,
-            Painters_Spirit.Instance
+            Painters_Spirit.Instance,
+            AshenDecay.Instance
         };
         
         internal Dictionary<string, Func<bool, bool>> BoolGetters = new();

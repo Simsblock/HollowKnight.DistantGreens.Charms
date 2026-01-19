@@ -15,7 +15,6 @@ public class AshenDecay : ACharm
     /*TODO
      
      Silksongsong healing Integration
-     Deep Focus Integration
      Description
      Location (in Kingdoms Edge)
      HUD & Sprite
@@ -84,7 +83,7 @@ public class AshenDecay : ACharm
     private void ModHooksOnHeroUpdateHook()
     {
         var toRemove = _afflictedEnemies
-            .Where(e => e.Value.Affliction_time <= 0)
+            .Where(e => e.Value.Affliction_time <= 0 || e.Key.isDead)
             .Select(e => e.Key)
             .ToList();
         foreach(var key in toRemove) _afflictedEnemies.Remove(key);
@@ -92,14 +91,15 @@ public class AshenDecay : ACharm
         {
             e.Value.Affliction_time -= Time.deltaTime;
             e.Value.Affliction_ticker -= Time.deltaTime;
-            DistantGreensCharms.Instance.Log(e.Value.Affliction_ticker);
             if (e.Value.Affliction_ticker <= 0)
             {
                 e.Value.ResetTicker();
                 e.Key.Hit(new HitInstance()
                 {
-                    DamageDealt = PlayerData.instance.nailDamage, 
-                    Multiplier = _damage_multiplier,  
+                    DamageDealt = PlayerData.instance.nailDamage,
+                    Multiplier = PlayerData.instance.equippedCharm_34
+                        ? _deepfocus_damage_multiplier
+                        : _damage_multiplier,
                     AttackType = AttackTypes.Spell
                 });
             }
@@ -115,7 +115,6 @@ public class AshenDecay : ACharm
         orig(self, hitInstance);
         if(!_charged || 
            !Equipped() || 
-           hitInstance.Source.gameObject!=null || 
            !hitInstance.Source.gameObject.name.Contains("Slash")) return;
         if (_afflictedEnemies.TryGetValue(self, out AfflictionData data)) data.ResetTime(); 
         else _afflictedEnemies.Add(self, new ());

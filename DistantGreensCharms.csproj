@@ -400,6 +400,7 @@
         <EmbeddedResource Include="Resources\Misc\paint2.png" />
         <EmbeddedResource Include="Resources\Misc\paint3.png" />
         <EmbeddedResource Include="Resources\Misc\paint4.png" />
+        <EmbeddedResource Include="Resources\CharmIcons\AshenDecay.png" />
         <EmbeddedResource Include="Resources\LogicJsons\Locations.json" />
         <!-- Add more sprites as needed -->
     </ItemGroup>

@@ -14,8 +14,8 @@ public class AshenDecay : ACharm
 {
     /*TODO
      
-     Silksongsong healing Integration
-     HUD & Sprite
+     Silksong healing Integration
+     HUD
      */
     
     public static readonly AshenDecay Instance = new();
@@ -41,7 +41,7 @@ public class AshenDecay : ACharm
     private bool _charged = false;
     private float _remainingChargeTime;
     
-    public override string SpritePath  => "CharmIcons.MossMask"; //todo
+    public override string SpritePath  => "CharmIcons.AshenDecay";
     public override string Name => "Ashen Decay"; 
     public override string Description => "A charm manifested from the rotting remains of a higher being.\nWhen focusing it imbues the wielder's blade with a curse, which lets enemies become ash.";
     public override int DefaultCost => 3;
@@ -118,7 +118,7 @@ public class AshenDecay : ACharm
         else _afflictedEnemies.Add(self, new ());
     }
     /*
-
+     
     private void OnEquipCharm(On.GameManager.orig_EquipCharm orig, GameManager self, int charmnum)
     {
         orig(self, charmnum);

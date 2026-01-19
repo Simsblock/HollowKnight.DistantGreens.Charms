@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using DistantGreensCharms.Helper;
 using DistantGreensCharms.Settings;
 using HutongGames.PlayMaker;
@@ -14,7 +16,6 @@ public class AshenDecay : ACharm
      
      Silksongsong healing Integration
      Deep Focus Integration
-     DOT apply
      Description
      Location (in Kingdoms Edge)
      HUD & Sprite
@@ -22,11 +23,26 @@ public class AshenDecay : ACharm
     
     public static readonly AshenDecay Instance = new();
     //private bool _charged = true;
-    private const float _damage_multiplier=1f; // based of nail damage
-    private const float _chargeTime = 5f;
+    protected class AfflictionData
+    {
+        public AfflictionData(float time_multiplier=1f)
+        {
+            ResetTime(time_multiplier);
+            ResetTicker();
+        }
+        public float Affliction_time;
+        public float Affliction_ticker;
+
+        public void ResetTime(float time_multiplier=1f) { Affliction_time = 10.3f*time_multiplier; } //How long status applies
+        public void ResetTicker() { Affliction_ticker = 1f; } //Time for damage ticks -> with affliction time = 10.3 -> 10 hits
+    }
+    private Dictionary<HealthManager, AfflictionData> _afflictedEnemies = new();
+    private const float _damage_multiplier=0.5f; // based of nail damage
+    private const float _deepfocus_damage_multiplier=0.77f;
+    private const float _chargeTime = 10f;
+    
     private bool _charged = false;
     private float _remainingChargeTime;
-    // private bool Useable => _charged && Equipped();
     
     public override string SpritePath  => "CharmIcons.MossMask"; //todo
     public override string Name => "Ashen Decay"; 
@@ -42,8 +58,7 @@ public class AshenDecay : ACharm
     {
         //On.GameManager.EquipCharm += OnEquipCharm;
         //On.GameManager.UnequipCharm += OnUnequipCharm;
-        //On.HealthManager.Hit += OnEnemyHit;
-        //On.HeroController.StopMPDrain += OnFocusEnd;
+        On.HealthManager.Hit += OnEnemyHit;
         On.HeroController.Start += ModifySpellControlFsm;
         ModHooks.HeroUpdateHook += ModHooksOnHeroUpdateHook;
     }
@@ -52,17 +67,7 @@ public class AshenDecay : ACharm
     {
         orig(self);
         PlayMakerFSM spellControlFSM = self.gameObject.LocateMyFSM("Spell Control");
-        if (spellControlFSM == null)
-        {
-            DistantGreensCharms.Instance.LogError("Could not find Spell Control FSM!");
-            return;
-        }
-
-        FsmState focusGetFinish = spellControlFSM.GetState("Focus Get Finish"); // maybe needs change
-        if (focusGetFinish == null)
-        {
-            DistantGreensCharms.Instance.LogError("Could not find Focus Get Finish State!");
-        }
+        FsmState focusGetFinish = spellControlFSM.GetState("Focus Get Finish");
         focusGetFinish.AddFirstAction(new ExecuteLambda(
             () => OnFocusFinished()
             )
@@ -78,18 +83,42 @@ public class AshenDecay : ACharm
 
     private void ModHooksOnHeroUpdateHook()
     {
-        if (!_charged) return;
-        _remainingChargeTime -= Time.deltaTime;
-        if(_remainingChargeTime <= 0f) _charged = false;
+        var toRemove = _afflictedEnemies
+            .Where(e => e.Value.Affliction_time <= 0)
+            .Select(e => e.Key)
+            .ToList();
+        foreach(var key in toRemove) _afflictedEnemies.Remove(key);
+        foreach (var e in _afflictedEnemies)
+        {
+            e.Value.Affliction_time -= Time.deltaTime;
+            e.Value.Affliction_ticker -= Time.deltaTime;
+            DistantGreensCharms.Instance.Log(e.Value.Affliction_ticker);
+            if (e.Value.Affliction_ticker <= 0)
+            {
+                e.Value.ResetTicker();
+                e.Key.Hit(new HitInstance()
+                {
+                    DamageDealt = PlayerData.instance.nailDamage, 
+                    Multiplier = _damage_multiplier,  
+                    AttackType = AttackTypes.Spell
+                });
+            }
+        }
+        
+        if (_charged) _remainingChargeTime -= Time.deltaTime;
+        if (_remainingChargeTime <= 0f) _charged = false;
+        
     }
     
     private void OnEnemyHit(On.HealthManager.orig_Hit orig, HealthManager self, HitInstance hitInstance)
     {
         orig(self, hitInstance);
-        if(!_charged) return;
-
-        //GameObject enemyObject = self.gameObject;
-        //int enemyHP = self.hp;
+        if(!_charged || 
+           !Equipped() || 
+           hitInstance.Source.gameObject!=null || 
+           !hitInstance.Source.gameObject.name.Contains("Slash")) return;
+        if (_afflictedEnemies.TryGetValue(self, out AfflictionData data)) data.ResetTime(); 
+        else _afflictedEnemies.Add(self, new ());
     }
     /*
 

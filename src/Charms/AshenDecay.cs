@@ -15,8 +15,6 @@ public class AshenDecay : ACharm
     /*TODO
      
      Silksongsong healing Integration
-     Description
-     Location (in Kingdoms Edge)
      HUD & Sprite
      */
     
@@ -45,11 +43,11 @@ public class AshenDecay : ACharm
     
     public override string SpritePath  => "CharmIcons.MossMask"; //todo
     public override string Name => "Ashen Decay"; 
-    public override string Description => "Apply DOT after focus";
-    public override int DefaultCost => 2;
-    public override string SceneName => "Fungus3_50"; //todo
-    public override float X => 22.07f; //todo
-    public override float Y => 115.40f; //todo
+    public override string Description => "A charm manifested from the rotting remains of a higher being.\nWhen focusing it imbues the wielder's blade with a curse, which lets enemies become ash.";
+    public override int DefaultCost => 3;
+    public override string SceneName => "Deepnest_East_04";
+    public override float X => 5.43f;
+    public override float Y => 146.40f;
     
     public override CharmState State(LocalSettings s) => s.MossMask;
 

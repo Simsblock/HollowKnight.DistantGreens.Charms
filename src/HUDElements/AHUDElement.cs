@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using DistantGreensCharms.Helper;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -36,5 +37,48 @@ public abstract class AHUDElement
         if(SpriteRenderer is null) SpriteRenderer = GameObject.GetComponent<SpriteRenderer>();
         DistantGreensCharms.Instance.Log("SetVisbility: "+(SpriteRenderer is null).ToString());
         SpriteRenderer.enabled = visibility;
+    }
+}
+
+public class HUDAnimation
+{
+    public GameObject GameObject { get; set; }
+    public SpriteRenderer SpriteRenderer =>  GameObject.GetComponent<SpriteRenderer>();
+
+    public int fps;
+    public List<Sprite> frames = new();
+    
+    private bool _playing = false;
+
+    public HUDAnimation(IEnumerable<string> framePaths, GameObject gameObject, int fps = 12)
+    {
+        this.fps = fps;
+        GameObject = gameObject;
+        foreach (var path in framePaths)
+        {
+            frames.Add(SpriteManager.Get(path));
+        }
+    }
+
+    public void StartAnimation()
+    {
+        GameManager.instance.StartCoroutine(PlayAnimation());
+    }
+    protected virtual IEnumerator PlayAnimation()//bool disableSpriteRendererAtEnd = false)
+    {
+        if (_playing) yield break;
+        _playing = true;
+
+        int index = 0;
+        float frameTime = 1f / fps; 
+
+        while (index < frames.Count)
+        {
+            SpriteRenderer.sprite = frames[index];
+            index++;
+            yield return new WaitForSeconds(frameTime);
+        }
+        //SpriteRenderer.enabled = disableSpriteRendererAtEnd;
+        _playing = false;
     }
 }

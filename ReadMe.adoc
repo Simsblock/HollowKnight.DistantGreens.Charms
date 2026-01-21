@@ -1,45 +1,49 @@
-# DistantGreens.charms
+= DistantGreens.charms
 
-## What is this?
+== What is this?
 This is a Hollow Knight Mod adding charms to the game. +
 The charms are planned to be used in further Mods down the line.
 
-## Dependencies
+For more specific information about the mod, please take a look into SPOILERS.adoc.
+
+== Dependencies
 The Mod needs following to function:
 
 - https://github.com/SFGrenade/SFCore[SFCore]
 - https://github.com/homothetyhk/HollowKnight.ItemChanger[ItemChanger]
 
-## Integrations
+== Integrations
 The Mod has Integrations with:
 
-### Map Mods
+=== Map Mods
 The charms locations get displayed on MapMods through Pins. (No extra dependencies)
 
-### Randomizer 4
+=== Randomizer 4
 The Integration allows charms to be added to the RandomizerPool and for their charmNotches to Randomized as well. +
 The original charm locations also become new randomized locations.
 
-#### Dependencies for this Integration
+==== Dependencies for this Integration
 - https://github.com/homothetyhk/RandomizerMod[RandomizerMod]
 - https://github.com/homothetyhk/RandomizerCore[RandomizerCore]
 - https://github.com/homothetyhk/RandomizerCore.Json[RandomizerCore.Json]
 - https://github.com/homothetyhk/HollowKnight.MenuChanger[MenuChanger]
 
-### DebugMod
+=== DebugMod
 Charms are distributed with GiveAllCharms and taken away with RemoveAllCharms.
 
-#### Dependencies for this Integration
+==== Dependencies for this Integration
 - https://github.com/TheMulhima/HollowKnight.DebugMod[DebugMod]
 
-## Known Bugs and Missing Features
+== Known Bugs and Missing Features
 - MossMaskHUD -> loads before HUD is rendered IF equipped on load save
+- Painter Spirit -> Color Splashes appear on breakable & non-permanent floors eg.: trapdoors in queens gardens.
 - TickerManager -> Not yet implemented
+- Randomizer Integration -> item placements don't get created anymore?
 
-### Found an Issue or have Suggestions?
+=== Found an Issue or have Suggestions?
 Please open a GitHub issue or fork the repo and make a Pull-Request. Thank you!
 
-## Repo Naming Conventions
+== Repo Naming Conventions
 - I-Prefix for Interfaces; eg.: IClass
 - A-Prefix for Abstract classes; eg.: AClass
 - _-Prefix for private attributes; eg.: private bool _charged

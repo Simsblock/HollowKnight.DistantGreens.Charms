@@ -53,8 +53,8 @@ public static class RandomizerManager
         int vanillaTotal = rb.ctx.notchCosts.Sum();
         int variance = maxTotal - minTotal;
         
-        int maxCost = Math.Max(0, (vanillaTotal - variance) / 10);
-        int minCost = Math.Min(totalNotches, (vanillaTotal + variance) / 10);
+        int maxCost = Math.Max(totalNotches, (vanillaTotal + variance) / 10);
+        int minCost = Math.Min(0, (vanillaTotal - variance) / 10);
         int randomNotchAmount = rng.Next(minCost, maxCost + 1); //The Amount of Notches which will be distributed
         Dictionary<int,int> charmCosts = DistantGreensCharms.Charms.ToDictionary(charm => charm.Num, charm => 0);
 
@@ -103,7 +103,7 @@ public static class RandomizerManager
                 info.getItemDef = () => new()
                 {
                     Name = charmName,
-                    Pool = "Charm,",
+                    Pool = "Charm",
                     MajorItem = false,
                     PriceCap = 666 //Should make adjustable per charm in ACHarm
                 }

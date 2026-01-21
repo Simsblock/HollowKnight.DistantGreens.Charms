@@ -7,4 +7,5 @@ public class LocalSettings
 {
     public CharmState MossMask = new();
     public CharmState Painters_Spirit = new();
+    public CharmState AshenDecay = new();
 }

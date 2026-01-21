@@ -15,6 +15,28 @@
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
+
+    <!-- Cross-platform path configuration -->
+    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+        <!-- Windows default Steam path - adjust as needed -->
+        <HollowKnightPath>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight</HollowKnightPath>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+        <!-- Linux default Steam path - adjust as needed -->
+        <HollowKnightPath>$(HOME)/.local/share/Steam/steamapps/common/Hollow Knight</HollowKnightPath>
+    </PropertyGroup>
+
+    <!-- Allow manual override via environment variable -->
+    <PropertyGroup Condition="'$(HOLLOW_KNIGHT_PATH)' != ''">
+        <HollowKnightPath>$(HOLLOW_KNIGHT_PATH)</HollowKnightPath>
+    </PropertyGroup>
+
+    <!-- Derived paths -->
+    <PropertyGroup>
+        <HollowKnightRefs>$(HollowKnightPath)/hollow_knight_Data/Managed</HollowKnightRefs>
+        <HollowKnightMods>$(HollowKnightPath)/hollow_knight_Data/Managed/Mods</HollowKnightMods>
+    </PropertyGroup>
+
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
@@ -24,9 +46,9 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <!-- Path to DLL references required to build mod -->
-        <LocalRefs>$(MSBuildProgramFiles32)/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed</LocalRefs>
+        <LocalRefs>$(HollowKnightRefs)</LocalRefs>
         <!-- Path to Mods folder -->
-        <ModsPath>$(LocalRefs)/Mods</ModsPath>
+        <ModsPath>$(HollowKnightMods)</ModsPath>
         <!-- The folder that exports will be generated in -->
         <ExportDir>Output</ExportDir>
     </PropertyGroup>
@@ -38,7 +60,7 @@
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
         <!-- Path to DLL references required to build mod -->
-        <LocalRefs>$(MSBuildProgramFiles32)/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed</LocalRefs>
+        <LocalRefs>$(HollowKnightRefs)</LocalRefs>
         <!-- The folder that exports will be generated in -->
         <ExportDir>Output</ExportDir>
     </PropertyGroup>
@@ -57,11 +79,18 @@
         <WriteLinesToFile File="Version.txt" Lines="$(OutputFileString)" Overwrite="true" Encoding="UTF-8"/>
     </Target>
     <Target Condition="'$(Configuration)' == 'Debug'" Name="CopyMod" AfterTargets="PostBuildEvent">
-        <RemoveDir Condition="Exists('$(ModsPath)/$(TargetName)')" Directories="$(ModsPath)/$(TargetName)"/>
-        <MakeDir Directories="$(ModsPath)/$(TargetName)"/>
-        <Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ModsPath)/$(TargetName)"/>
+        <RemoveDir Condition="Exists('$(HollowKnightMods)/$(TargetName)')" Directories="$(HollowKnightMods)/$(TargetName)"/>
+        <MakeDir Directories="$(HollowKnightMods)/$(TargetName)"/>
+        <Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(HollowKnightMods)/$(TargetName)"/>
+        <Message Importance="high" Text="Mod copied to: $(HollowKnightMods)/$(TargetName)"/>
         <!-- Uncomment this if you have the game installed on Steam, Steam is in your PATH environment variable, and you want to run the game upon build. -->
         <!-- Exec Command="steam steam://rungameid/367520" / -->
+    </Target>
+    <Target Condition="'$(Configuration)' == 'Release'" Name="CopyModRelease" AfterTargets="PackageMod">
+        <RemoveDir Condition="Exists('$(HollowKnightMods)/$(TargetName)')" Directories="$(HollowKnightMods)/$(TargetName)"/>
+        <MakeDir Directories="$(HollowKnightMods)/$(TargetName)"/>
+        <Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(HollowKnightMods)/$(TargetName)"/>
+        <Message Importance="high" Text="Mod copied to: $(HollowKnightMods)/$(TargetName)"/>
     </Target>
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
@@ -371,6 +400,7 @@
         <EmbeddedResource Include="Resources\Misc\paint2.png" />
         <EmbeddedResource Include="Resources\Misc\paint3.png" />
         <EmbeddedResource Include="Resources\Misc\paint4.png" />
+        <EmbeddedResource Include="Resources\CharmIcons\AshenDecay.png" />
         <EmbeddedResource Include="Resources\LogicJsons\Locations.json" />
         <!-- Add more sprites as needed -->
     </ItemGroup>

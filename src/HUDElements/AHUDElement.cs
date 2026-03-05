@@ -35,7 +35,7 @@ public abstract class AHUDElement
     public virtual void SetVisibility(bool visibility)
     {
         if(SpriteRenderer is null) SpriteRenderer = GameObject.GetComponent<SpriteRenderer>();
-        DistantGreensCharms.Instance.Log("SetVisbility: "+(SpriteRenderer is null).ToString());
+        //DistantGreensCharms.Instance.Log("SetVisbility: "+(SpriteRenderer is null).ToString());
         SpriteRenderer.enabled = visibility;
     }
 }
